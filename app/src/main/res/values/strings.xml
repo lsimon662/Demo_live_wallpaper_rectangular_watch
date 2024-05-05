@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">Rectangle Clock Wallpaper</string>
+    <string name="wallpaper_description">Rectangle Clock</string>
+    <string name="wallpaper_lbl">Clock Live Wallpaper</string>
+    <string name="display_hand_sec">Display hand seconds</string>
+    <string name="set_clock_lw">Set Clock LW</string>
+    <string name="display_hand_sec_txt">Display hand sec</string>
+    <string name="enabled">enabled</string>
+    <string name="disabled">disabled</string>
+    <string name="show_screencast">Show tutorial</string>
+    <string name="show_source">Show source code</string>
+    <string name="other_apps">Other Apps</string>
+    <string name="copy_ssaurel">(c) ls</string>
+
+    <string name="radius">100</string>
+
+    <string name="odsad">40</string>
+
+    <string name="zosuv">70</string>
+
+    <string name="poloha">MIDDLE</string>
+
+    <string name="hrubkaobvodovejciary">48</string>
+
+    <string name="odsadenieobvodovejciary">-24</string>
+
+    <bool name="h_shadow">true</bool>
+
+    <bool name="inner_round">true</bool>
+
+    <bool name="beam">false</bool>
+
+    <bool name="contour">false</bool>
+
+    <bool name="innercontour">true</bool>
+
+    <bool name="angle">false</bool>
+
+    <bool name="b_top">false</bool>
+    <bool name="b_middle">true</bool>
+    <bool name="b_bottom">false</bool>
+
+    <bool name="h_round">false</bool>
+    <bool name="h_rect_cd">false</bool>
+    <bool name="h_rect_ca">true</bool>
+
+    <bool name="h_line_constant_length">false</bool>
+    <bool name="h_mechanic">true</bool>
+    <bool name="h_mechanic_full">false</bool>
+
+    <bool name="h_continouos">true</bool>
+    <bool name="h_step">false</bool>
+
+    <bool name="b_lines">true</bool>
+    <bool name="b_circles">false</bool>
+    <bool name="kazdaPiata">false</bool>
+
+    <bool name="b_arabic_numbers">false</bool>
+    <bool name="b_roman_numbers">false</bool>
+    <bool name="b_none">true</bool>
+
+    <bool name="h_background_gradient">true</bool>
+    <bool name="h_inner_contour_gradient">true</bool>
+
+</resources>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="farbaPozadia">#022E2B</color>
+
+    <color name="farbaPozadiaGradient">#022C1E</color>
+
+    <color name="mojaUvodnaFarba">#054332</color>
+
+    <color name="farbaRuciciek">#FAEF0B</color>
+
+    <color name="farbaVysuvnikaRuciciek">#EDBA02</color>
+
+    <color name="farbaVnutraRuciciek">#053E35</color>
+
+    <color name="farbaZnaciek">#FFFFFFFF</color>
+
+    <color name="farbaCisel">#FFFFFFFF</color>
+
+    <color name="farbaTiena">#393838</color>
+
+    <color name="farbaObvodovejCiary">#FF507070</color>
+
+    <color name="farbaVnutraObvodovejCiary">#064540</color>
+
+    <color name="farbaVnutraObvodovejCiaryGradient">#022C1D</color>
+
+    <color name="farbaSekundovejRucicky">#FF2600</color>
+
+    <color name="farbaVnutraSekundovejRucicky">#0C3724</color>
+
+    <color name="farbaVysuvnikaSekundovejRucicky">#F62285</color>
+
+    <color name="farbaOzdobnehoKruhu">#0A2E20</color>
+
+    <color name="farbaOzdobnychLucov">#FF334267</color>
+
+</resources>
