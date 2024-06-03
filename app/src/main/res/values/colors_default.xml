@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="farbaPozadia">#022E2B</color>
+    <color name="farbaPozadia">#016045</color>
 
     <color name="farbaPozadiaGradient">#022C1E</color>
 
-    <color name="mojaUvodnaFarba">#054332</color>
+    <color name="mojaUvodnaFarba">#043729</color>
 
     <color name="farbaRuciciek">#FAEF0B</color>
 
@@ -25,11 +25,11 @@
 
     <color name="farbaVnutraObvodovejCiaryGradient">#022C1D</color>
 
-    <color name="farbaSekundovejRucicky">#FF2600</color>
+    <color name="farbaSekundovejRucicky">#FF3C00</color>
 
     <color name="farbaVnutraSekundovejRucicky">#0C3724</color>
 
-    <color name="farbaVysuvnikaSekundovejRucicky">#F62285</color>
+    <color name="farbaVysuvnikaSekundovejRucicky">#F622BA</color>
 
     <color name="farbaOzdobnehoKruhu">#0A2E20</color>
 

@@ -7,10 +7,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 
 import java.util.Calendar;
@@ -39,12 +41,12 @@ public class AnalogClock extends View {
         private int vypln;          // padding
         private int velkostPisma;
 
-        static int okraj; // default - odsadi body cifernika od okraja
-        static int polomer;  // radius
-        static int zosuv_per;  // dafault 80%
-        static int zosuv;
-        static int hrubkaObvodovejCiary;
-        static int odsadenieObvodovejCiary;
+        int okraj; // default - odsadi body cifernika od okraja
+        int polomer;  // radius
+        int zosuv_per;  // dafault 80%
+        int zosuv;
+        int hrubkaObvodovejCiary;
+        int odsadenieObvodovejCiary;
 
         private int medzeraOdCisiel;    // numeralSpacing
         private int skratenieRucicky, skratenieHodinovejRucicky = 0;
@@ -127,6 +129,13 @@ public class AnalogClock extends View {
             cal = Calendar.getInstance();
         }
 
+    public AnalogClock(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        System.out.println("Start z XML constructor c. 2 " + attrs.getPositionDescription() + " sirka " + getWidth());
+        // nastavUvodneHodnoty();
+        // inicializujHodiny();
+    }
+
 
     public void config(float x, float y, int size, Date date, Paint paint, int[] colors, boolean displayHandSec) {
             this.x = x;
@@ -183,7 +192,7 @@ public class AnalogClock extends View {
 
     public void inicializujHodiny() {      // initClock
 
-        // nastavUvodneHodnoty();
+        nastavUvodneHodnoty();
 
         // h_shadow = false;
         zosuv_per = Integer.parseInt(mojTextZosuv);    //   65;

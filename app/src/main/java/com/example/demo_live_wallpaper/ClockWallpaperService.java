@@ -47,13 +47,13 @@ public class ClockWallpaperService extends WallpaperService {
         private AnalogClock clock;
         private SharedPreferences prefs;
         Canvas platno;
+        // kontrola git
 
         public ClockWallpaperEngine() {
             prefs = PreferenceManager
                     .getDefaultSharedPreferences(ClockWallpaperService.this);
             prefs.registerOnSharedPreferenceChangeListener(this);
-            displayHandSec = prefs.getBoolean(
-                    SettingsActivity.DISPLAY_HAND_SEC_KEY, true);
+            displayHandSec = prefs.getBoolean(SettingsActivity.DISPLAY_HAND_SEC_KEY, true);
             paint = new Paint();
             paint.setAntiAlias(true);
             paint.setStyle(Paint.Style.STROKE);
@@ -70,7 +70,6 @@ public class ClockWallpaperService extends WallpaperService {
             if(clock.b_arabic_numbers)
                 clock.kresliCisla(platno, clock.cisla_arabske, 0,0, clock.farbaCisel);
             clock.kresliRucicky(platno);*/
-
 
             handler.post(drawRunner);
         }

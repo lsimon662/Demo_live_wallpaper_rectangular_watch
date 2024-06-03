@@ -59,23 +59,17 @@ public class MainActivity extends Activity {
         startActivity(intent);
     }
 
-    public void showTutorial(View v) {
-        try {
-            Intent intent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("vnd.youtube:" + YOUTUBE_ID));
-            startActivity(intent);
-        } catch (ActivityNotFoundException ex) {
-            Intent intent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http://www.youtube.com/watch?v=" + YOUTUBE_ID));
-            startActivity(intent);
-        }
+    public void showApplication(View v) {
+        Intent akcia = new Intent(this, ClockApplication.class);
+        /*EditText mojaSprava = (EditText) findViewById(R.id.edt_Msg);
+        String spr = mojaSprava.getText().toString();
+
+        akcia.putExtra("SPRAVA", spr);*/
+
+        startActivity(akcia);
     }
 
-    public void showOtherApps(View v) {
-        Intent intent = new Intent(Intent.ACTION_VIEW)
-                .setData(Uri
-                        .parse("https://play.google.com/store/apps/developer?id=Sylvain+Saurel"));
-        startActivity(intent);
+    public void exit(View v) {
+        System.exit(0);
     }
-
 }

@@ -35,18 +35,14 @@
                 <action android:name="android.service.wallpaper.WallpaperService" >
                 </action>
             </intent-filter>
-
             <meta-data
                 android:name="android.service.wallpaper"
                 android:resource="@xml/clock_wallpaper"
                 />
         </service>
-
         <activity
             android:name=".SettingsActivity"
             android:exported="true">
         </activity>
-
     </application>
-
 </manifest>

@@ -7,14 +7,14 @@
     <string name="display_hand_sec_txt">Display hand sec</string>
     <string name="enabled">enabled</string>
     <string name="disabled">disabled</string>
-    <string name="show_screencast">Show tutorial</string>
+    <string name="show_screencast">Show Clock Application</string>
     <string name="show_source">Show source code</string>
     <string name="other_apps">Other Apps</string>
     <string name="copy_ssaurel">(c) ls</string>
 
-    <string name="radius">100</string>
+    <string name="radius">80</string>
 
-    <string name="odsad">40</string>
+    <string name="odsad">10</string>
 
     <string name="zosuv">70</string>
 
@@ -23,6 +23,7 @@
     <string name="hrubkaobvodovejciary">48</string>
 
     <string name="odsadenieobvodovejciary">-24</string>
+    <string name="exit">Exit</string>
 
     <bool name="h_shadow">true</bool>
 
