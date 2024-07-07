@@ -3,6 +3,7 @@ package com.example.demo_live_wallpaper;
 
 import java.util.Date;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Canvas;
@@ -62,7 +63,11 @@ public class ClockWallpaperService extends WallpaperService {
 
             clock = new AnalogClock(getApplicationContext());
             // bgColor = clock.farbaPozadia;
-            clock.nastavUvodneHodnoty();
+            // clock.nastavUvodneHodnoty();
+            // "MojeUserPrefs"
+            SharedPreferences sp = getSharedPreferences("MojeUserPrefs", Context.MODE_PRIVATE);
+            if(sp != null)
+                clock.vyberZoSharedPreferences("MojeUserPrefs");
             bgColor = clock.farbaPozadia;
 
             /*clock.inicializujHodiny();
@@ -124,6 +129,7 @@ public class ClockWallpaperService extends WallpaperService {
             canvas.drawColor(bgColor);
             clock.config(width / 2, height / 2, (int) (width * 0.6f),
                     new Date(), paint, colors, displayHandSec);
+            clock.inicializujHodiny();
             clock.draw(canvas);
         }
 

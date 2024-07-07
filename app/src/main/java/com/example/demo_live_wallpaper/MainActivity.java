@@ -59,14 +59,22 @@ public class MainActivity extends Activity {
         startActivity(intent);
     }
 
-    public void showApplication(View v) {
+    /*public void showApplication(View v) {
         Intent akcia = new Intent(this, ClockApplication.class);
-        /*EditText mojaSprava = (EditText) findViewById(R.id.edt_Msg);
+        *//*EditText mojaSprava = (EditText) findViewById(R.id.edt_Msg);
         String spr = mojaSprava.getText().toString();
 
-        akcia.putExtra("SPRAVA", spr);*/
+        akcia.putExtra("SPRAVA", spr);*//*
 
         startActivity(akcia);
+    }*/
+
+    public void showApplication(View view) {
+
+        Intent akcia = new Intent(this, ClockApplication.class);
+
+        startActivity(akcia);
+
     }
 
     public void exit(View v) {

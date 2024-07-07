@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/m_dimensions"
+        android:title="Dimensions"
+        app:showAsAction="never">
+        <menu>
+
+            <item android:id="@+id/polomer"
+                android:icon="@drawable/ic_radius"
+                android:title="Radius" />
+
+            <item android:id="@+id/m_margin"
+                android:icon="@drawable/ic_margin_1__3_"
+                android:title="Margin" />
+
+            <item android:id="@+id/zosuvPer"
+                android:icon="@drawable/ic_vyskove_nastavenie_2"
+                android:title="Height Contract" />
+
+
+            <item android:id="@+id/hrubkaKontury"
+                android:icon="@drawable/ic_pozadie_image"
+                android:title="Contour Thickness" />
+
+
+            <item android:id="@+id/mOdsadenieObvodovejCiary"
+                android:icon="@drawable/ic_contour_distance__1_"
+                android:title="Contour Distance" />
+
+            <!--
+            <item android:id="@+id/mHrubkaOzdobnehoKruhu"
+                android:icon="@drawable/ic_contour_distance__1_"
+                android:title="Round Lines Thickness" />
+
+            <item android:id="@+id/mHrubkaOzdobnychLucov"
+                android:icon="@drawable/ic_contour_distance__1_"
+                android:title="Beam Lines Thickness" />
+
+            <item android:id="@+id/mDlzkaOzdobnehoKruhu"
+                android:icon="@drawable/ic_contour_distance__1_"
+                android:title="Length Round Lines" />
+
+            <item android:id="@+id/mPolohaOzdobnehoKruhu"
+                android:icon="@drawable/ic_contour_distance__1_"
+                android:title="Position Round Lines" />
+
+            <item android:id="@+id/mDlzkaOzdobnychLucov"
+                android:icon="@drawable/ic_contour_distance__1_"
+                android:title="Length Beam Lines" />
+
+            <item android:id="@+id/mPolohaOzdobnychLucov"
+                android:icon="@drawable/ic_contour_distance__1_"
+                android:title="Beam Lines Position" />
+
+            -->
+        </menu>
+    </item>
+
+    <item android:id="@+id/poloha"
+        android:title="Position"
+        >
+        <menu>
+            <group android:checkableBehavior="single">
+
+                <item android:id="@+id/top"
+                    android:icon="@drawable/ic_position_up"
+                    android:title="Top"
+
+                    android:checked="false"/>
+
+                <item android:id="@+id/middle"
+                    android:icon="@drawable/ic_position_middle"
+                    android:title="Center"
+                    android:checked="true"/>
+
+                <item android:id="@+id/bottom"
+                    android:icon="@drawable/ic_position_bottom"
+                    android:title="Bottom"
+                    android:checked="false"/>
+
+            </group>
+        </menu>
+    </item>
+
+    <item android:id="@+id/hands"
+        android:title="Hands"
+        app:showAsAction="never">
+
+        <menu>
+            <group
+                android:id="@+id/shaping"
+                android:checkableBehavior="single">
+
+                <item android:id="@+id/constant_length_line"
+                    android:icon="@drawable/ic_hands_line"
+                    android:title="Constant Length /Classic/"
+                    android:checked="false"/>
+
+                <!-- <item android:id="@+id/line"
+                     android:icon="@drawable/ic_hands_line"
+                     android:title="Variable Length"
+                     android:checked="false"/>-->
+
+                <item android:id="@+id/mechanic"
+                    android:icon="@drawable/ic_hands_mechanic"
+                    android:title="Mechanic"
+                    android:checked="true"/>
+
+                <item android:id="@+id/mechanic_full"
+                    android:icon="@drawable/ic_hands_mechanic"
+                    android:title="Mechanic full"
+                    android:checked="true"/>
+
+            </group>
+
+            <group
+                android:id="@+id/running"
+                android:checkableBehavior="single">
+
+                <item android:id="@+id/continouos"
+                    android:icon="@drawable/ic_hands_continouos"
+                    android:title="Continouos"
+                    android:checked="false"/>
+
+                <item android:id="@+id/step"
+                    android:icon="@drawable/ic_hands_seconds"
+                    android:title="One second step"
+                    android:checked="true"/>
+
+            </group>
+
+        </menu>
+
+    </item>
+
+    <item android:id="@+id/shape"
+        android:title="Shape"
+        app:showAsAction="never">
+
+        <menu>
+            <group android:checkableBehavior="single">
+
+                <item android:id="@+id/round"
+                    android:icon="@drawable/ic_shape_round__6_"
+                    android:title="Round"
+                    android:checked="false" />
+
+                <item android:id="@+id/rc_distance"
+                    android:icon="@drawable/ic_shape_constant_distance__1_"
+                    android:title="Rectangle Distance"
+                    android:checked="false"/>
+
+                <item android:id="@+id/rc_angle"
+                    android:icon="@drawable/ic_shape_constant_angle__3_"
+                    android:title="Rectangle Angle"
+                    android:checked="true"/>
+            </group>
+
+            <item android:id="@+id/contour"
+                android:title="Contour"
+                android:checkable="true"
+                android:checked="false"
+                />
+
+            <item android:id="@+id/inner_contour"
+                android:title="Inner Contour"
+                android:checkable="true"
+                android:checked="true"
+                />
+
+            <item android:id="@+id/shadow"
+                android:title="Shadow"
+
+                android:checkable="true"
+                android:checked="true"
+                />
+
+        </menu>
+
+    </item>
+
+
+    <item android:id="@+id/marks"
+        android:title="Marks">
+
+        <menu>
+            <group android:checkableBehavior="single">
+
+                <item android:id="@+id/m_lines"
+                    android:title="Lines"
+                    android:checked="true"/>
+
+                <item android:id="@+id/m_circles"
+                    android:title="Circles"
+                    android:checked="false"/>
+            </group>
+
+            <item android:id="@+id/everyFifth"
+
+                android:title="Every fifth"
+                android:checkable="true"
+                android:checked="false"
+                />
+        </menu>
+
+
+    </item>
+
+
+    <item android:id="@+id/m_color"
+
+        android:title="Color"
+        app:showAsAction="never">
+
+        <menu>
+
+            <!--<item android:id="@+id/m_background_transparent"
+                android:icon="@drawable/ic_baseline_circle_24"
+                android:title="Background Transparent" />-->
+
+            <item android:id="@+id/m_background"
+                android:icon="@drawable/ic_baseline_circle_24"
+                android:title="Background" />
+
+            <item android:id="@+id/m_background_gradient"
+
+                android:title="Background Gradient"
+                android:checkable="true"
+                android:checked="false"
+                />
+
+            <item android:id="@+id/m_background_color_gradient"
+                android:icon="@drawable/ic_baseline_circle_24"
+                android:title="Background Gradient" />
+
+            <item android:id="@+id/m_hands"
+                android:icon="@drawable/ic_baseline_circle_24"
+                android:title="Hands" />
+
+            <item android:id="@+id/m_shift_hands"
+                android:icon="@drawable/ic_baseline_circle_24"
+                android:title="Hands shift" />
+
+            <item android:id="@+id/hand_seconds_color"
+                android:icon="@drawable/ic_baseline_circle_24"
+                android:iconTint="@color/purple_500"
+                android:title="Hand seconds" />
+
+            <item android:id="@+id/hand_shift_seconds_color"
+                android:icon="@drawable/ic_baseline_circle_24"
+                android:iconTint="@color/purple_500"
+                android:title="Hand seconds shift" />
+
+            <item android:id="@+id/inner_hands"
+                android:icon="@drawable/ic_baseline_circle_24"
+                android:title="Inner Hands" />
+
+            <item android:id="@+id/inner_seconds_hand"
+                android:icon="@drawable/ic_baseline_circle_24"
+                android:title="Inner Seconds Hand" />
+
+            <item android:id="@+id/m_marks"
+                android:iconTint="@color/purple_500"
+                android:icon="@drawable/ic_baseline_circle_24"
+                android:title="Marks" />
+
+            <item android:id="@+id/numbers"
+                android:iconTint="@color/purple_500"
+                android:icon="@drawable/ic_baseline_circle_24"
+
+                android:title="Numbers" />
+
+            <item android:id="@+id/contour_color"
+                android:icon="@drawable/ic_baseline_circle_24"
+                android:iconTint="@color/purple_500"
+                android:title="Contour" />
+
+            <item android:id="@+id/inner_contour_color"
+                android:icon="@drawable/ic_baseline_circle_24"
+                android:iconTint="@color/purple_500"
+                android:title="Inner Contour" />
+
+            <item android:id="@+id/inner_contour_gradient"
+
+                android:title="Inner Contour Gradient"
+                android:checkable="true"
+                android:checked="false"
+                />
+
+            <item android:id="@+id/inner_contour_color_gradient"
+                android:icon="@drawable/ic_baseline_circle_24"
+                android:iconTint="@color/purple_500"
+                android:title="Inner Contour Gradient" />
+
+            <item android:id="@+id/shadow_color"
+                android:icon="@drawable/ic_baseline_circle_24"
+                android:iconTint="@color/purple_500"
+                android:title="Shadow" />
+
+            <item android:id="@+id/inner_roud_color"
+                android:icon="@drawable/ic_baseline_circle_24"
+                android:iconTint="@color/purple_500"
+                android:title="Inner Round" />
+
+            <item android:id="@+id/beam_color"
+                android:icon="@drawable/ic_baseline_circle_24"
+                android:iconTint="@color/purple_500"
+                android:title="Beam" />
+
+
+        </menu>
+
+    </item>
+
+    <item android:id="@+id/item4"
+        android:title="Numbers"
+        app:showAsAction="never">
+
+        <menu>
+            <group android:checkableBehavior="single">
+
+                <item android:id="@+id/arabic_numbers"
+
+                    android:checked="false"
+                    android:title="Arabic" />
+
+                <item android:id="@+id/roman_numbers"
+
+                    android:checked="false"
+                    android:title="Roman" />
+
+                <item android:id="@+id/none_numbers"
+
+                    android:checked="true"
+                    android:title="None" />
+
+            </group>
+        </menu>
+
+    </item>
+
+    <item android:id="@+id/lines"
+        android:title="Lines"
+        app:showAsAction="never">
+
+        <menu>
+            <group android:checkableBehavior="all">
+
+                <item android:id="@+id/inner_round"
+                    android:title="Inner Round"
+                    android:checkable="true"
+                    android:checked="false"
+                    />
+
+                <item android:id="@+id/beam"
+                    android:title="Beam"
+                    android:checkable="true"
+                    android:checked="false"
+                    />
+
+                <item android:id="@+id/angle"
+                    android:title="Angle"
+                    android:checkable="true"
+                    android:checked="false" />
+
+
+            </group>
+        </menu>
+
+    </item>
+
+    <item android:id="@+id/m_settings"
+        android:title="Settings"
+        app:showAsAction="never" >
+        <menu>
+
+            <item android:id="@+id/m_default_settings"
+                android:icon="@drawable/ic_default_settings"
+                android:title="Default settings" />
+
+            <item android:id="@+id/m_save_settings"
+                android:icon="@drawable/ic_save_settings"
+                android:title="Save settings" />
+
+            <item android:id="@+id/m_restore_settings"
+                android:icon="@drawable/ic_download_settings"
+                android:title="Restore settings" />
+
+        </menu>
+    </item>
+
+    <item android:id="@+id/m_set_wallpaper"
+        android:iconTint="@color/purple_500"
+        android:title="Set Wallpaper" />
+
+    <item android:id="@+id/m_whole_screen"
+        android:iconTint="@color/purple_500"
+        android:icon="@drawable/ic_zavriet"
+        android:title="Preview" />
+
+    <item android:id="@+id/m_exit"
+        android:iconTint="@color/purple_500"
+        android:icon="@drawable/ic_zavriet"
+        android:title="Exit" />
+</menu>

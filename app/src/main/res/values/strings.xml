@@ -14,7 +14,7 @@
 
     <string name="radius">80</string>
 
-    <string name="odsad">10</string>
+    <string name="odsad">40</string>
 
     <string name="zosuv">70</string>
 
@@ -56,9 +56,9 @@
     <bool name="b_circles">false</bool>
     <bool name="kazdaPiata">false</bool>
 
-    <bool name="b_arabic_numbers">false</bool>
+    <bool name="b_arabic_numbers">true</bool>
     <bool name="b_roman_numbers">false</bool>
-    <bool name="b_none">true</bool>
+    <bool name="b_none">false</bool>
 
     <bool name="h_background_gradient">true</bool>
     <bool name="h_inner_contour_gradient">true</bool>

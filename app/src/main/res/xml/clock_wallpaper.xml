@@ -3,8 +3,4 @@
 <wallpaper xmlns:android="http://schemas.android.com/apk/res/android"
     android:description="@string/wallpaper_description"
     android:settingsActivity="com.example.demo_live_wallpaper.SettingsActivity"
-
     android:thumbnail="@drawable/ic_launcher" />
-
-
-<!-- android:settingsActivity="com.ssaurel.clocklw.SettingsActivity" -->

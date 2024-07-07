@@ -1,18 +1,29 @@
 package com.example.demo_live_wallpaper;
 
 import android.content.Context;
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Build;
+import android.os.Bundle;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RadialGradient;
 import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.Shader;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.res.ResourcesCompat;
 
 import java.util.Calendar;
@@ -24,48 +35,39 @@ public class AnalogClock extends View {
         private float x;
         /** center Y. */
         private float y;
-        private int radius;
+        // int radius;
         private Calendar cal;
         private Paint kresba;
         // private Bitmap clockDial = BitmapFactory.decodeResource(getResources(), R.drawable.widgetdial);
-        private int sizeScaled = -1;
-        private Bitmap clockDialScaled;
+        // private int sizeScaled = -1;
+        // private Bitmap clockDialScaled;
         /** Hands colors. */
         private int[] colors;
         private boolean displayHandSec;
 
-        int sirka;
-        int vyska;
-        int min;
+        private int sirka, vyska, vyska_neredukovana;
 
-        private int vypln;          // padding
+        private int vypln = 0;          // padding
         private int velkostPisma;
 
-        int okraj; // default - odsadi body cifernika od okraja
-        int polomer;  // radius
-        int zosuv_per;  // dafault 80%
-        int zosuv;
+        int zosuv, zosuv_per;
         int hrubkaObvodovejCiary;
         int odsadenieObvodovejCiary;
 
-        private int medzeraOdCisiel;    // numeralSpacing
-        private int skratenieRucicky, skratenieHodinovejRucicky = 0;
+        int medzeraOdCisiel;    // numeralSpacing
+        int skratenieRucicky, skratenieHodinovejRucicky = 0;
 
         // private Paint kresba;
         private boolean jeInicializovana;
         // private int[] cisla = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
         private String[] cisla_arabske = {"12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"};
         private String[] cisla_rimske = {"XII", "I", "II", "III", "IIII", "V", "VI", "VII", "VIII", "IX", "X", "XI"};
-        private Rect pravouholnik = new Rect();
-        Cifernik cf;
-        Cifernik cfj;
+        Rect pravouholnik = new Rect();
 
-    String mojPolomer;     // polomer rohou
+        String mojPolomer;     // polomer rohou
     String mojTextOdsad;   // ogray
     String mojTextZosuv;
     String mojTextPoloha;
-
-    // static String mojTextVyska;
     String mojaHrubkaObvodovejCiary;
     String mojeOdsadenieObvodovejCiary;
 
@@ -123,108 +125,400 @@ public class AnalogClock extends View {
 
     RelativeLayout mojeRozlozenie;
     int mojaUvodnaFarba;
+    // private int umiestnenie, umiestnenie2;
+    Shader shader;
+
+    int polomer, okraj, min, min_bez_okraja;
+
+    Cifernik cf, cfj;
 
     public AnalogClock(Context context) {
             super(context);
-            cal = Calendar.getInstance();
+            // cal = Calendar.getInstance();
         }
 
     public AnalogClock(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         System.out.println("Start z XML constructor c. 2 " + attrs.getPositionDescription() + " sirka " + getWidth());
-        // nastavUvodneHodnoty();
+         nastavUvodneHodnoty();
         // inicializujHodiny();
     }
 
 
     public void config(float x, float y, int size, Date date, Paint paint, int[] colors, boolean displayHandSec) {
-            this.x = x;
-            this.y = y;
-            this.kresba = paint;
-            this.colors = colors;
-            this.displayHandSec = displayHandSec;
+             this.x = x;
+             this.y = y;
+        System.out.println("*** config  x " + this.x + " y " + this.y);
+            this.sirka = (int) (x * 2.0);  // kvoli kompatibilite
+            this.vyska_neredukovana = (int) (y * 2.0);
+        System.out.println("*** config vyska_neredukovana " + vyska_neredukovana + " sirka " + this.sirka + " x " + x + " y " + y);
 
-            cal.setTime(date);
+            // this.kresba = paint;
+             // this.colors = colors;
+//            this.displayHandSec = displayHandSec;
 
-            // scale bitmap if needed
-           /* if (size != sizeScaled) {
-                clockDialScaled = Bitmap.createScaledBitmap(clockDial, size, size, false);
-                radius = size / 2;
-            }*/
-        }
-
-    protected void onDraw(Canvas platno) {
-            super.onDraw(platno);
-
-            if (kresba != null) {
-                inicializujHodiny();
-                kresliBody(platno, 0,0, farbaZnaciek);
-                if(b_arabic_numbers)
-                    kresliCisla(platno, cisla_arabske, 0,0, farbaCisel);
-                kresliRucicky(platno);
-
-                // kresliStred(platno, 0,0,40, farbaRuciciek);
-
-                // draw clock img
-                // platno.drawBitmap(clockDialScaled, x - radius, y - radius, null);
-                // platno.save();
-                // platno.drawColor(Color.YELLOW);
-                float sec = cal.get(Calendar.SECOND);
-                float min = cal.get(Calendar.MINUTE);
-                float hour = cal.get(Calendar.HOUR_OF_DAY);
-                //draw hands
-                // kresba.setColor(farbaPozadia);
-                // platno.drawLine(x, y , (float) (x + (radius * 0.5f) * Math.cos(Math.toRadians((hour / 12.0f * 360.0f) - 90f))),
-                   //     (float) (y + (radius * 0.5f) * Math.sin(Math.toRadians((hour / 12.0f * 360.0f) - 90f))), kresba);
-                // platno.save();
-                // kresba.setColor(colors[1]);
-                // platno.drawLine(x, y, (float) (x + (radius * 0.6f) * Math.cos(Math.toRadians((min / 60.0f * 360.0f) - 90f))),
-                 //       (float) (y + (radius * 0.6f) * Math.sin(Math.toRadians((min / 60.0f * 360.0f) - 90f))), kresba);
-                // platno.save();
-
-                 if (displayHandSec) {
-                    kresba.setColor(colors[2]);
-                    platno.drawLine(x, y, (float) (x + (radius * 0.7f) * Math.cos(Math.toRadians((sec / 60.0f * 360.0f) - 90f))),
-                            (float) (y + (radius * 0.7f) * Math.sin(Math.toRadians((sec / 60.0f * 360.0f) - 90f))), kresba);
-                }
-            }
+            // cal.setTime(date);
+        
         }
 
     public void inicializujHodiny() {      // initClock
 
-        nastavUvodneHodnoty();
+        // this.vyska = zosuv_per * getHeight() / 100;   //
+        this.vyska = zosuv_per * this.vyska_neredukovana / 100;   //
 
-        // h_shadow = false;
-        zosuv_per = Integer.parseInt(mojTextZosuv);    //   65;
-
-        vyska = (int) ((zosuv_per * y * 2) / 100);
-
-        sirka = (int) x * 2;  // 1048;
-        // vyska = (int) y * 2;  // 1280;
-
-        min = Math.min(vyska, sirka);
-
-        // zosuv = super.getHeight() - vyska;
-        zosuv = (int) (y * 2 - vyska);
-
-        // zosuv = 360;
+        // !!!!!  tu je problem
+        min = Math.min(this.sirka, this.vyska);
+        // dopletena je min s min bez okraja
+        // aj vyska a vyska redukovana treba zmenit nazvy na vyska a vyska_zo_zosuvom
+        // lebo je z toho potom maglajs
+        // min = Math.min(this.sirka - okraj, this.vyska - okraj);
 
         vypln = medzeraOdCisiel + 80;
         velkostPisma = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 20, getResources().getDisplayMetrics());
 
-        polomer = min / 4 - vypln;
+        // polomer = min / 4 - vypln; // preco je zamiesany polomer s polohou cisel
+
+        System.out.println("*** inicializuj vyska_neredukovana " + this.vyska_neredukovana + " sirka " + this.sirka + " polomer " + polomer);
+
         skratenieRucicky = min / 20;
         skratenieHodinovejRucicky = min / 7;
+
+        if(mojPolomer != "" && mojPolomer != null)
+            try { polomer = Integer.parseInt(mojPolomer);
+                if(polomer < 5) polomer = 5;
+                if(polomer > 320) polomer = 320;
+                // okraj = Integer.parseInt(mojTextOdsad);
+                // System.out.println("Polomer : " + polomer);
+            } catch(NumberFormatException nfe) {
+                System.out.println("Could not parse " + nfe); }
+
+        if(mojTextOdsad != "" && mojTextOdsad != null) {
+            try {
+                okraj = Integer.parseInt(mojTextOdsad);
+                if (okraj < 0) okraj = 0;
+                if (okraj > 360) okraj = 360;
+
+                System.out.println("Okraj : " + okraj);
+            } catch (NumberFormatException nfe) {
+                System.out.println("Could not parse " + nfe);
+            }
+        }
+
+        if(mojTextZosuv != "" && mojTextZosuv != null)
+            try {
+                zosuv_per = Integer.parseInt(mojTextZosuv);
+                if(zosuv_per < 40)
+                    zosuv_per = 40;
+                if(zosuv_per > 100)
+                    zosuv_per = 100;
+
+                System.out.println("Zosuv [%] : " + zosuv_per);} catch(NumberFormatException nfe) {
+                System.out.println("Could not parse " + nfe); }
+
+        if(mojaHrubkaObvodovejCiary != "" && mojaHrubkaObvodovejCiary != null)
+            try {
+                hrubkaObvodovejCiary = Integer.parseInt(mojaHrubkaObvodovejCiary);
+                if(hrubkaObvodovejCiary < 1) hrubkaObvodovejCiary = 1;
+                if(hrubkaObvodovejCiary > 128) hrubkaObvodovejCiary = 128;
+
+                System.out.println("Hrubka obvodovej ciary : " + hrubkaObvodovejCiary);} catch(NumberFormatException nfe) {
+                System.out.println("Could not parse " + nfe); }
+
+        if(mojeOdsadenieObvodovejCiary != "" && mojeOdsadenieObvodovejCiary != null)
+            try {
+                odsadenieObvodovejCiary = Integer.parseInt(mojeOdsadenieObvodovejCiary);
+                if(odsadenieObvodovejCiary > 128) odsadenieObvodovejCiary = 128;
+                if(odsadenieObvodovejCiary < -48) odsadenieObvodovejCiary = -48;
+
+                System.out.println("Odsadenie obvodovej ciary / -47 to 127 / : " + odsadenieObvodovejCiary);} catch(NumberFormatException nfe) {
+                System.out.println("Could not parse " + nfe); }
+
+        cal = Calendar.getInstance();
         kresba = new Paint();
         jeInicializovana = true; // isInit
         cf = new Cifernik(60);     // pre kreslenie cifernika a sekundovy beh
-        // if(h_continouos)
-        // cfj = new Cifernik(6000);
         cfj = new Cifernik(1500);  // pre jemny beh
-        okraj = 50;
-        cf.CifernikKU(okraj, polomer, sirka, vyska);
-        cfj.CifernikKU(okraj,polomer,sirka,vyska);
+    }
 
+    protected void onDraw(Canvas platno) {
+            super.onDraw(platno);
+
+            if (kresba != null && sirka > 0 && vyska > 0) {
+
+                if(h_background_gradient) {
+                    shader = new RadialGradient(sirka / 2, vyska_neredukovana / 2, vyska_neredukovana / 2,
+                            farbaPozadia, farbaPozadiaGradient, Shader.TileMode.CLAMP);
+                    // Paint paint = new Paint();
+                    kresba.setShader(shader);
+                } else
+                    kresba.setColor(farbaPozadia);
+
+                platno.drawRect(new RectF(0, 0, sirka, vyska_neredukovana), kresba);
+                kresba.setShader(null);
+
+                kresba.setColor(farbaPozadia);
+
+//                umiestnenie =  cal.get(Calendar.SECOND) * 25 + cal.get(Calendar.MILLISECOND) / 40;
+//                umiestnenie2 =  cal.get(Calendar.SECOND) * 100 + cal.get(Calendar.MILLISECOND) / 10;
+
+                kresliPevneCiary(platno, 0,0,farbaPozadia);
+                platno.save();
+
+                kresba.setColor(Color.GREEN);
+                kresba.setStrokeWidth(12);
+                kresba.setTextSize(24);
+                kresba.setTypeface(Typeface.MONOSPACE);
+
+//                platno.drawText(" mojTextPoloha " + mojTextPoloha + " mojaHrubkaObvodovejCiary " + mojaHrubkaObvodovejCiary + " mojeOdsadenieObvodovejCiary " + mojeOdsadenieObvodovejCiary, sirka / 50, vyska / 1.35f,kresba);
+//platno.drawText(" mojPolomer " + mojPolomer + " mojTextOdsad " + mojTextOdsad + " mojTextZosuv " + mojTextZosuv, sirka / 50.0f, vyska / 1.3f,kresba);
+//platno.drawText(" polomer " + polomer + " okraj " + okraj + " zosuv " + zosuv + " zosuv_per " + zosuv_per, sirka / 50.0f, vyska / 1.25f,kresba);
+//platno.drawText(" sirka " + sirka + " vyska_neredukovana " + vyska_neredukovana + " vyska " + vyska + " min " + min, sirka / 50.0f, vyska / 1.2f,kresba);
+//platno.drawText(" medzera od cisel " + medzeraOdCisiel + " vypln " + vypln, sirka / 50.0f, vyska / 1.16f,kresba);
+
+
+                kresliBody(platno, 0,0, farbaZnaciek);
+
+                 platno.save();
+
+                if(b_arabic_numbers)
+                    kresliCisla(platno, cisla_arabske, 0,0, farbaCisel);
+
+                if(b_roman_numbers)
+                    kresliCisla(platno, cisla_rimske, 0,0, farbaCisel);
+
+                 platno.save();
+
+                 kresliRucicky(platno);
+            }
+        }
+
+
+
+    public void kresliPevneCiary(Canvas platno, int posunT_X, int posunT_Y, int farba) {
+
+        if(h_background_gradient) {
+            System.out.println("*** ClockApplication  *** kresliPevneCiary *** barva " + mojaUvodnaFarba + " width " + sirka + " height " + vyska_neredukovana);
+            shader = new RadialGradient(sirka / 2, vyska_neredukovana / 2, vyska_neredukovana / 2,
+                    farbaPozadia, farbaPozadiaGradient, Shader.TileMode.CLAMP);
+            // Paint paint = new Paint();
+            kresba.setShader(shader);
+        } else
+            kresba.setColor(farbaPozadia);
+
+        if(h_inner_contour_gradient) {
+            shader = new RadialGradient(sirka / 2, vyska_neredukovana / 2, vyska_neredukovana / 4,
+                    farbaVnutraObvodovejCiary, farbaVnutraObvodovejCiaryGradient, Shader.TileMode.MIRROR);
+            kresba.setShader(shader);
+        }
+        else
+            kresba.setShader(null);
+
+
+        if (b_top)
+            zosuv = 0;    // TOP
+
+
+        if (b_middle)
+            zosuv = vyska_neredukovana - vyska;   // MIDDLE
+            // zosuv = getHeight() - vyska;   // MIDDLE
+
+
+        if (b_bottom)
+            zosuv = 2 * (vyska_neredukovana - vyska); // BOTTOM
+            // zosuv = 2 * (getHeight() - vyska); // BOTTOM
+
+
+        if(h_rect_ca) {
+            cf.CifernikKU(okraj, polomer, sirka, vyska);
+            if (h_continouos)
+                cfj.CifernikKU(okraj, polomer, sirka, vyska);
+        }
+
+        if(h_rect_cd) {
+            cf.CifernikKV(okraj, polomer, sirka, vyska);
+            if(h_continouos)
+                cfj.CifernikKV(okraj, polomer, sirka, vyska);
+        }
+        // cf.CifernikKV(okraj, polomer / 2 - 10, sirka, vyska);
+
+        if(h_round) {
+            cf.CifernikO(okraj, sirka, vyska);
+            if(h_continouos)
+                cfj.CifernikO(okraj, sirka, vyska);
+        }
+
+        // *********************
+
+        if(h_inner_contour && h_round) {
+            kresba.setStrokeWidth(0);
+            kresba.setStyle(Paint.Style.FILL);  // kresli obvod, nie vnutro obluka
+            // kresba.setStrokeCap(Paint.Cap.ROUND);
+            // kresba.setStyle(Paint.Style.STROKE);
+            kresba.setColor(farbaVnutraObvodovejCiary);
+            platno.drawCircle(sirka / 2,
+                    vyska / 2 + zosuv / 2, (min - okraj) / 2 - odsadenieObvodovejCiary, kresba);
+        }
+
+        if(h_contour && h_round) {
+            kresba.setStrokeWidth(hrubkaObvodovejCiary);
+            kresba.setStyle(Paint.Style.STROKE);  // kresli obvod, nie vnutro obluka
+            // kresba.setStrokeCap(Paint.Cap.ROUND);
+            // kresba.setStyle(Paint.Style.STROKE);
+
+            kresba.setColor(farbaObvodovejCiary);
+
+            platno.drawCircle(sirka / 2,
+                    vyska / 2 + zosuv / 2, (min - okraj ) / 2 - odsadenieObvodovejCiary, kresba);
+        }
+
+        if(h_inner_contour && !h_round) {  // draw contour
+            kresba.setStrokeWidth(0);
+            kresba.setStyle(Paint.Style.FILL);
+
+            kresba.setColor(farbaVnutraObvodovejCiary);
+
+            platno.drawRoundRect(cf.point_U_L(okraj + odsadenieObvodovejCiary, 0, sirka, vyska).getX(),
+                    cf.point_U_L(okraj + odsadenieObvodovejCiary, polomer + odsadenieObvodovejCiary, sirka, vyska).getY() + zosuv / 2,
+                    cf.point_B_R(okraj + odsadenieObvodovejCiary, 0, sirka, vyska).getX(),
+                    cf.point_B_R(okraj + odsadenieObvodovejCiary, polomer + odsadenieObvodovejCiary, sirka, vyska).getY() + zosuv / 2,
+                    polomer,
+                    polomer,
+                    kresba
+            );
+        }
+
+        if(h_contour && !h_round) {  // draw contour
+            // obvod cifernika
+            kresba.setStyle(Paint.Style.STROKE);
+            kresba.setColor(farbaObvodovejCiary);
+            kresba.setStrokeWidth(hrubkaObvodovejCiary);
+            platno.drawRoundRect(cf.point_U_L(okraj + odsadenieObvodovejCiary, 0, sirka, vyska).getX(),
+                    cf.point_U_L(okraj + odsadenieObvodovejCiary, polomer + odsadenieObvodovejCiary, sirka, vyska).getY() + zosuv / 2,
+                    cf.point_B_R(okraj + odsadenieObvodovejCiary, 0, sirka, vyska).getX(),
+                    cf.point_B_R(okraj + odsadenieObvodovejCiary, polomer + odsadenieObvodovejCiary, sirka, vyska).getY() + zosuv / 2,
+                    polomer,
+                    polomer,
+                    kresba
+            );
+        }
+
+        if(h_angle && !h_round) {
+            kresba.setColor(Color.rgb(80,30,30));
+            kresba.setStrokeWidth(2);
+            platno.drawLine(cf.point_L_U(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_L_U(okraj, polomer, sirka, vyska).getY() + zosuv / 2,
+                    cf.point_M_U_L(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_M_U_L(okraj, polomer, sirka, vyska).getY() + zosuv / 2, kresba);
+
+            platno.drawLine(cf.point_U_L(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_U_L(okraj, polomer, sirka, vyska).getY() + zosuv / 2,
+                    cf.point_M_U_L(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_M_U_L(okraj, polomer, sirka, vyska).getY() + zosuv / 2, kresba);
+
+            platno.drawLine(sirka / 2,
+                    vyska / 2 + zosuv / 2,
+                    cf.point_M_U_L(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_M_U_L(okraj, polomer, sirka, vyska).getY() + zosuv / 2, kresba);
+
+            platno.drawLine(cf.point_R_U(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_R_U(okraj, polomer, sirka, vyska).getY() + zosuv / 2,
+                    cf.point_M_U_R(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_M_U_R(okraj, polomer, sirka, vyska).getY() + zosuv / 2, kresba);
+
+            platno.drawLine(cf.point_U_R(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_U_R(okraj, polomer, sirka, vyska).getY() + zosuv / 2,
+                    cf.point_M_U_R(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_M_U_R(okraj, polomer, sirka, vyska).getY() + zosuv / 2, kresba);
+
+            platno.drawLine(sirka / 2,
+                    vyska / 2 + zosuv / 2,
+                    cf.point_M_U_R(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_M_U_R(okraj, polomer, sirka, vyska).getY() + zosuv / 2, kresba);
+
+            platno.drawLine(cf.point_R_B(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_R_B(okraj, polomer, sirka, vyska).getY() + zosuv / 2,
+                    cf.point_M_B_R(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_M_B_R(okraj, polomer, sirka, vyska).getY() + zosuv / 2, kresba);
+
+            platno.drawLine(cf.point_B_R(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_B_R(okraj, polomer, sirka, vyska).getY() + zosuv / 2,
+                    cf.point_M_B_R(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_M_B_R(okraj, polomer, sirka, vyska).getY() + zosuv / 2, kresba);
+
+            platno.drawLine(sirka / 2,
+                    vyska / 2 + zosuv / 2,
+                    cf.point_M_B_R(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_M_B_R(okraj, polomer, sirka, vyska).getY() + zosuv / 2, kresba);
+
+            platno.drawLine(cf.point_L_B(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_L_B(okraj, polomer, sirka, vyska).getY() + zosuv / 2,
+                    cf.point_M_B_L(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_M_B_L(okraj, polomer, sirka, vyska).getY() + zosuv / 2, kresba);
+
+            platno.drawLine(cf.point_B_L(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_B_L(okraj, polomer, sirka, vyska).getY() + zosuv / 2,
+                    cf.point_M_B_L(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_M_B_L(okraj, polomer, sirka, vyska).getY() + zosuv / 2, kresba);
+
+            platno.drawLine(sirka / 2,
+                    vyska / 2 + zosuv / 2,
+                    cf.point_M_B_L(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_M_B_L(okraj, polomer, sirka, vyska).getY() + zosuv / 2, kresba);
+
+            kresba.setColor(Color.rgb(120,10,10));
+            // stred zaciatky a horny koniec pravej ciary
+            platno.drawLine(sirka / 2,
+                    vyska / 2 + zosuv / 2,
+                    cf.point_R_U(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_R_U(okraj, polomer, sirka, vyska).getY() + zosuv / 2, kresba);
+
+            // stred zaciatky a horny koniec lavej ciary
+            platno.drawLine(sirka / 2,
+                    vyska / 2 + zosuv / 2,
+                    cf.point_L_U(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_L_U(okraj, polomer, sirka, vyska).getY() + zosuv / 2, kresba);
+
+            // stred zaciatky a spodny koniec pravej ciary
+            platno.drawLine(sirka / 2,
+                    vyska / 2 + zosuv / 2,
+                    cf.point_R_B(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_R_B(okraj, polomer, sirka, vyska).getY() + zosuv / 2, kresba);
+
+            // stred zaciatky a spodny koniec lavej ciary
+            platno.drawLine(sirka / 2,
+                    vyska / 2 + zosuv / 2,
+                    cf.point_L_B(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_L_B(okraj, polomer, sirka, vyska).getY() + zosuv / 2, kresba);
+
+            // stred zaciatky a pravy koniec hornej ciary
+            platno.drawLine(sirka / 2,
+                    vyska / 2 + zosuv / 2,
+                    cf.point_U_R(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_U_R(okraj, polomer, sirka, vyska).getY() + zosuv / 2, kresba);
+
+            // stred zaciatky a lavy koniec hornej ciary
+            platno.drawLine(sirka / 2,
+                    vyska / 2 + zosuv / 2,
+                    cf.point_U_L(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_U_L(okraj, polomer, sirka, vyska).getY() + zosuv / 2, kresba);
+
+            // stred zaciatky a pravy koniec spodej ciary
+            platno.drawLine(sirka / 2,
+                    vyska / 2 + zosuv / 2,
+                    cf.point_B_R(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_B_R(okraj, polomer, sirka, vyska).getY() + zosuv / 2, kresba);
+
+            // stred zaciatky a lavy koniec spodnej ciary
+            platno.drawLine(sirka / 2,
+                    vyska / 2 + zosuv / 2,
+                    cf.point_B_L(okraj, polomer, sirka, vyska).getX(),
+                    cf.point_B_L(okraj, polomer, sirka, vyska).getY() + zosuv / 2, kresba);
+
+        }
+
+        if(h_inner_contour_gradient) {
+            kresba.setShader(null);
+        }
     }
 
     public void kresliBody(Canvas platno, int posunT_X, int posunT_Y, int farba) {
@@ -240,8 +534,8 @@ public class AnalogClock extends View {
 
         for(int pocitadlo = 0; pocitadlo <= cf.cislo - 1; pocitadlo++) {
 
-            dlzkaPoZnacku = (int) (cf.body[pocitadlo].dlzka(sirka / 2, vyska / 2));
-            uholZnacky = (double) (cf.body[pocitadlo].uhol(sirka / 2, vyska / 2));
+            dlzkaPoZnacku = (int) (cf.body[pocitadlo].dlzka(this.sirka / 2, this.vyska / 2));
+            uholZnacky = (double) (cf.body[pocitadlo].uhol(this.sirka / 2, this.vyska / 2));
             if (pocitadlo % 5 == 0) {
                 if(h_shadow)
                     kresba.setShadowLayer(6f, 9f,6f, farbaTiena);
@@ -318,18 +612,18 @@ public class AnalogClock extends View {
         int polomerRucicky;
         this.farbaVysuvnikaRuciciek = farbaVysuvnikaRuciciek;
 
-        min = Math.min(vyska - okraj, sirka - okraj);
+        // min = Math.min(vyska - okraj, sirka - okraj);
         // Double uhol = (double) umiestnenie;
 
         if(h_continouos) {
-            uhol = cfj.body[umiestnenie].uhol(sirka / 2, vyska / 2);
+            uhol = cfj.body[umiestnenie].uhol(sirka >> 1, vyska >> 1);
             // int polomerRucicky = jeHodina ? polomer - skratenieRucicky - skratenieHodinovejRucicky : polomer - skratenieRucicky;
-            polomerRucicky = (int) (cfj.body[umiestnenie].dlzka(sirka / 2, vyska / 2));
+            polomerRucicky = (int) (cfj.body[umiestnenie].dlzka(sirka >> 1, vyska >> 1));
         }
         else {
-            uhol = cf.body[umiestnenie].uhol(sirka / 2, vyska / 2);
+            uhol = cf.body[umiestnenie].uhol(sirka >> 1, vyska >> 1);
             // int polomerRucicky = jeHodina ? polomer - skratenieRucicky - skratenieHodinovejRucicky : polomer - skratenieRucicky;
-            polomerRucicky = (int) (cf.body[umiestnenie].dlzka(sirka / 2, vyska / 2));
+            polomerRucicky = (int) (cf.body[umiestnenie].dlzka(sirka >> 1, vyska >> 1));
         }
         kresba.setStrokeCap(Paint.Cap.ROUND);
 
@@ -486,12 +780,12 @@ public class AnalogClock extends View {
         // kresba.setStrokeCap(Paint.Cap.SQUARE);
         // Double uhol = Math.PI * umiestnenie / 30 - Math.PI / 2;
         if(h_continouos) {
-            uhol = cfj.body[umiestnenie].uhol(sirka / 2, vyska / 2);
-            polomerRucicky = (int) (cfj.body[umiestnenie].dlzka(sirka / 2, (vyska) / 2));
+            uhol = cfj.body[umiestnenie].uhol((float) sirka / 2.0f, (float) (vyska / 2.0f));
+            polomerRucicky = (int) (cfj.body[umiestnenie].dlzka((float) sirka / 2.0f, (float) (vyska / 2.0f)));
         }
         else {
-            uhol = cf.body[umiestnenie].uhol(sirka / 2, vyska / 2);
-            polomerRucicky = (int) (cf.body[umiestnenie].dlzka(sirka / 2, (vyska) / 2));
+            uhol = cf.body[umiestnenie].uhol(sirka / 2.0f, vyska / 2.0f);
+            polomerRucicky = (int) (cf.body[umiestnenie].dlzka(sirka / 2.0f, (vyska) / 2.0f));
         }
 
         /*if(h_line) {
@@ -663,7 +957,7 @@ public class AnalogClock extends View {
         int polomerRucicky;
         this.farbaVysuvnikaSekundovejRucicky = farbaVysuvnikaSekundovejRucicky;
 
-        // int min = Math.min(vyska - okraj, sirka - okraj);
+        int min = Math.min(vyska - okraj, sirka - okraj);
 
         if(h_continouos) {
             uhol = cfj.body[umiestnenie].uhol(sirka / 2, vyska / 2);
@@ -821,7 +1115,7 @@ public class AnalogClock extends View {
         if(h_continouos) { //
             kresliStred(platno, 0, 0, 24, farbaRuciciek);
             kresliHodinovuRucicku(platno, (int) (hodina * 5 * 25 + c.get(Calendar.MINUTE) * 25 / 12), 0, 0, farbaRuciciek, farbaVnutraRuciciek, farbaVysuvnikaRuciciek);
-            kresliMinutovuRucicku(platno, (int)(c.get(Calendar.MINUTE) * 25 + c.get(Calendar.SECOND) * 25 / 60), 0, 0, farbaRuciciek, farbaVnutraRuciciek, farbaVysuvnikaRuciciek);
+            kresliMinutovuRucicku(platno, (int) (c.get(Calendar.MINUTE) * 25 + c.get(Calendar.SECOND) * 25 / 60), 0, 0, farbaRuciciek, farbaVnutraRuciciek, farbaVysuvnikaRuciciek);
             kresliSekundovuRucicku(platno, c.get(Calendar.SECOND) * 25 + c.get(Calendar.MILLISECOND) / 40, 0, 0, farbaSekundovejRucicky, farbaVnutraSekundovejRucicky, farbaVysuvnikaSekundovejRucicky);
             kresliStred(platno, 0, 0, 18, farbaSekundovejRucicky);
         }
@@ -847,10 +1141,14 @@ public class AnalogClock extends View {
         kresba.setStyle(Paint.Style.FILL);
         kresba.setDither(true);
         kresba.setAntiAlias(true);
-        // for(int cislo : cisla) {
+
+        if(h_shadow)
+            kresba.setShadowLayer(4f, 7f,4f, farbaTiena);
+
         for(int cislo = 1; cislo <= cisla.length; cislo++) {
-            dlzkaPoZnacku = (int) (cf.body[(cislo - 1) * 5].dlzka(sirka / 2, vyska / 2));
-            uholZnacky = (double) (cf.body[(cislo - 1) * 5].uhol(sirka / 2, vyska / 2));
+            // System.out.println(" cislo " + cislo + " sirka " + (sirka >> 1) + " vyska " + (vyska >> 1) + " cisla.length " + cisla.length);
+            dlzkaPoZnacku = (int) (cf.body[(cislo - 1) * 5].dlzka(sirka >> 1, vyska >> 1));
+            uholZnacky = (double) (cf.body[(cislo - 1) * 5].uhol(sirka >> 1, vyska >> 1));
             // String docasny = String.valueOf(cislo - 1);
 
             // kresba.getTextBounds(docasny, 0, docasny.length(), pravouholnik);
@@ -860,18 +1158,18 @@ public class AnalogClock extends View {
             // int x = (int) (sirka / 2 + Math.cos(uhol) * polomer - pravouholnik.width() / 2);
             // int y = (int) (vyska / 2 + Math.sin(uhol) * polomer + pravouholnik.height() / 2);
 
-            int x = (int) ((sirka / 2 + Math.cos(uholZnacky) * (dlzkaPoZnacku - 100)) - pravouholnik.width() / 2);
-            int y = (int) ((vyska / 2 + Math.sin(uholZnacky) * (dlzkaPoZnacku - 100)) + pravouholnik.height() / 2);
+            int x = (int) (((sirka >> 1) + Math.cos(uholZnacky) * (dlzkaPoZnacku - 100)) - (pravouholnik.width() >> 1));
+            int y = (int) (((vyska >> 1) + Math.sin(uholZnacky) * (dlzkaPoZnacku - 100)) + (pravouholnik.height() >> 1));
 
             // platno.drawText(docasny, x, y + zosuv / 2, kresba);
-            platno.drawText(cisla[cislo - 1], x + posunT_X, y + zosuv / 2 + posunT_Y, kresba);
+            platno.drawText(cisla[cislo - 1], x + posunT_X, y + (zosuv >> 1) + posunT_Y, kresba);
         }
     }
 
     private void kresliStred(Canvas platno, int posunT_X, int posunT_Y, int priemer,int farba) {
         kresba.setStyle(Paint.Style.FILL);
         kresba.setColor(farba);
-        platno.drawCircle(sirka / 2 + posunT_X, vyska / 2 + zosuv / 2 + posunT_Y,priemer, kresba);
+        platno.drawCircle(sirka / 2.0f + posunT_X, vyska / 2.0f + zosuv / 2.0f + posunT_Y,priemer, kresba);
     }
 
     void nastavUvodneHodnoty() {
@@ -951,6 +1249,172 @@ public class AnalogClock extends View {
 
         h_background_gradient = getResources().getBoolean(R.bool.h_background_gradient);  //  true;
         h_inner_contour_gradient = getResources().getBoolean(R.bool.h_inner_contour_gradient);  //  true;
+    }
+
+    void ulozDoSharedPreferences(String nazovOdkladaciehoSuboru) {
+
+        SharedPreferences sp = getContext().getSharedPreferences(nazovOdkladaciehoSuboru, Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sp.edit();
+
+        editor.putBoolean("TOP", this.b_top);
+        editor.putBoolean("MIDDLE", this.b_middle);
+        editor.putBoolean("BOTTOM", this.b_bottom);
+
+        // editor.putBoolean("LINE", this.h_line);
+        editor.putBoolean("LINECONSTANTLENGTH", this.h_line_constant_length);
+
+        editor.putBoolean("MECHANIC", this.h_mechanic);
+        editor.putBoolean("MECHANICFULL", this.h_mechanic_full);
+
+        editor.putBoolean("CONTINOUOS", this.h_continouos);
+        editor.putBoolean("STEP", this.h_step);
+
+        editor.putBoolean("ROUND", this.h_round);
+        editor.putBoolean("RECT_CD", this.h_rect_cd);
+        editor.putBoolean("RECT_CA", this.h_rect_ca);
+        editor.putBoolean("SHADOW", this.h_shadow);
+
+        // znacky po obvode
+        editor.putBoolean("LINES", this.b_lines);
+        editor.putBoolean("CIRCLES", this.b_circles);
+        editor.putBoolean("EVERYFIFTH", this.kazdaPiata);
+        // cisla po obvode
+        editor.putBoolean("ARABIC", this.b_arabic_numbers);
+        editor.putBoolean("ROMAN", this.b_roman_numbers);
+        editor.putBoolean("NONE", this.b_none);
+        // pomocne ciary
+        editor.putBoolean("INNER_ROUND", this.h_inner_round);
+
+        editor.putBoolean("BEAM", this.h_beam);
+        editor.putBoolean("CONTOUR", this.h_contour);
+        editor.putBoolean("INNERCONTOUR", this.h_inner_contour);
+        editor.putBoolean("ANGLE", this.h_angle);
+
+        editor.putBoolean("BACKGROUNDGRADIENT", this.h_background_gradient);
+        editor.putBoolean("INNERROUNDGRADIENT", this.h_inner_contour_gradient);
+
+        editor.putString("RADIUS", this.mojPolomer);
+        editor.putString("ODSAD", this.mojTextOdsad);
+        editor.putString("ZOSUV", this.mojTextZosuv);
+        editor.putString("POLOHA", this.mojTextPoloha);
+        editor.putString("HRUBKAOBVODOVEJCIARY", this.mojaHrubkaObvodovejCiary);
+        editor.putString("ODSADENIEOBVODOVEJCIARY", this.mojeOdsadenieObvodovejCiary);
+
+        editor.putInt("FARBAPOZADIA", this.farbaPozadia);
+
+        // editor.putInt("FARBAPOZADIA", ResourcesCompat.getColor(getResources(), R.color.farbaPozadia, null));
+
+        editor.putInt("FARBAPOZADIAGRADIENT", this.farbaPozadiaGradient);
+
+        // editor.putInt("FARBAPOZADIAGRADIENT", ResourcesCompat.getColor(getResources(), R.color.farbaPozadiaGradient, null));
+
+        editor.putInt("FARBARUCICIEK", this.farbaRuciciek);
+        editor.putInt("FARBAVNUTRARUCICIEK", this.farbaVnutraRuciciek);
+
+        editor.putInt("FARBAVYSUVNIKARUCICIEK", this.farbaVysuvnikaRuciciek);
+
+        editor.putInt("FARBAZNACIEK", this.farbaZnaciek);
+        editor.putInt("FARBACISEL", this.farbaCisel);
+        editor.putInt("FARBATIENA", this.farbaTiena);
+        editor.putInt("FARBAOBVODOVEJCIARY", this.farbaObvodovejCiary);
+        editor.putInt("FARBAVNUTRAOBVODOVEJCIARY", this.farbaVnutraObvodovejCiary);
+        editor.putInt("FARBAVNUTRAOBVODOVEJCIARYGRADIENT", this.farbaVnutraObvodovejCiaryGradient);
+        editor.putInt("FARBASEKUNDOVEJRUCICKY", this.farbaSekundovejRucicky);
+
+        editor.putInt("FARBAVNUTRASEKUNDOVEJRUCICKY", this.farbaVnutraSekundovejRucicky);
+
+        editor.putInt("FARBAVYSUVNIKASEKUNDOVEJRUCICKY", this.farbaVysuvnikaSekundovejRucicky);
+
+        editor.putInt("FARBAOZDOBNEHOKRUHU", this.farbaOzdobnehoKruhu);
+        editor.putInt("FARBAOZDOBNYCHLUCOV", this.farbaOzdobnychLucov);
+
+        editor.apply();
+
+//        if(nazovOdkladaciehoSuboru == "MojeUserPrefs")
+//            Toast.makeText(this, "Settings Saved", Toast.LENGTH_SHORT).show();
+    }
+
+    void vyberZoSharedPreferences(String nazovOdkladaciehoSuboru) {
+
+        SharedPreferences sp = getContext().getSharedPreferences(nazovOdkladaciehoSuboru, Context.MODE_PRIVATE);
+        // if (sp != null) {
+        // cifernik
+        this.b_top = sp.getBoolean("TOP", getResources().getBoolean(R.bool.b_top));  //  false);
+        this.b_middle = sp.getBoolean("MIDDLE", getResources().getBoolean(R.bool.b_middle));  //  true);
+        this.b_bottom = sp.getBoolean("BOTTOM", getResources().getBoolean(R.bool.b_bottom));  //  false);
+
+        // this.h_line = sp.getBoolean("LINE", false);
+        this.h_line_constant_length = sp.getBoolean("LINECONSTANTLENGTH", getResources().getBoolean(R.bool.h_line_constant_length));  //  false);
+        this.h_mechanic = sp.getBoolean("MECHANIC", getResources().getBoolean(R.bool.h_mechanic));  // true);
+        this.h_mechanic_full = sp.getBoolean("MECHANICFULL", getResources().getBoolean(R.bool.h_mechanic_full));  //  false);
+
+        this.h_continouos = sp.getBoolean("CONTINOUOS", getResources().getBoolean(R.bool.h_continouos));  // true);
+        this.h_step = sp.getBoolean("STEP", getResources().getBoolean(R.bool.h_step));  //  false);
+
+        this.h_round = sp.getBoolean("ROUND", getResources().getBoolean(R.bool.h_round));  //  false);
+        this.h_rect_cd = sp.getBoolean("RECT_CD", getResources().getBoolean(R.bool.h_rect_cd));  //  true);
+        this.h_rect_ca = sp.getBoolean("RECT_CA", getResources().getBoolean(R.bool.h_rect_ca));  //  false);
+        this.h_shadow = sp.getBoolean("SHADOW", getResources().getBoolean(R.bool.h_shadow));  //  false);
+
+        this.b_lines = sp.getBoolean("LINES", getResources().getBoolean(R.bool.b_lines));  //  true);
+        this.b_circles = sp.getBoolean("CIRCLES", getResources().getBoolean(R.bool.b_circles));  //  false);
+        this.kazdaPiata = sp.getBoolean("EVERYFIFTH", getResources().getBoolean(R.bool.kazdaPiata));  //  false);
+
+        this.b_arabic_numbers = sp.getBoolean("ARABIC", getResources().getBoolean(R.bool.b_arabic_numbers));  //  true);
+        this.b_roman_numbers = sp.getBoolean("ROMAN", getResources().getBoolean(R.bool.b_roman_numbers));  //  false);
+        this.b_none = sp.getBoolean("NONE", getResources().getBoolean(R.bool.b_none));  //  false);
+
+        this.h_inner_round = sp.getBoolean("INNER_ROUND", getResources().getBoolean(R.bool.inner_round));  //   false);
+        this.h_beam = sp.getBoolean("BEAM", false);
+        this.h_contour = sp.getBoolean("CONTOUR", getResources().getBoolean(R.bool.contour));   //  false);
+        this.h_inner_contour = sp.getBoolean("INNERCONTOUR", getResources().getBoolean(R.bool.innercontour));   //  true);
+        this.h_angle = sp.getBoolean("ANGLE", getResources().getBoolean(R.bool.angle));   //  false);
+
+        this.h_background_gradient = sp.getBoolean("BACKGROUNDGRADIENT", true);
+        this.h_inner_contour_gradient = sp.getBoolean("INNERROUNDGRADIENT", true);
+
+        this.mojPolomer = sp.getString("RADIUS", getResources().getString(R.string.radius));   // "150");
+
+        this.mojTextOdsad = sp.getString("ODSAD", getResources().getString(R.string.odsad));  // "120");
+
+        this.mojTextZosuv = sp.getString("ZOSUV", getResources().getString(R.string.zosuv));
+        this.mojTextPoloha = sp.getString("POLOHA", getResources().getString(R.string.poloha));  // "MIDDLE");
+
+        this.mojaHrubkaObvodovejCiary = sp.getString("HRUBKAOBVODOVEJCIARY", getResources().getString(R.string.hrubkaobvodovejciary));  // "48");
+        this.mojeOdsadenieObvodovejCiary = sp.getString("ODSADENIEOBVODOVEJCIARY", getResources().getString(R.string.odsadenieobvodovejciary));  //  "-24");
+
+        this.farbaPozadia = sp.getInt("FARBAPOZADIA",  ResourcesCompat.getColor(getResources(), R.color.farbaPozadia, null));
+
+        this.farbaPozadiaGradient = sp.getInt("FARBAPOZADIAGRADIENT", ResourcesCompat.getColor(getResources(), R.color.farbaPozadiaGradient, null));
+
+        mojaUvodnaFarba = this.farbaPozadia;
+        this.farbaRuciciek = sp.getInt("FARBARUCICIEK", ResourcesCompat.getColor(getResources(), R.color.farbaRuciciek, null));
+
+        this.farbaVysuvnikaRuciciek = sp.getInt("FARBAVYSUVNIKARUCICIEK", ResourcesCompat.getColor(getResources(), R.color.farbaVysuvnikaRuciciek, null));
+
+        this.farbaVnutraRuciciek = sp.getInt("FARBAVNUTRARUCICIEK", ResourcesCompat.getColor(getResources(), R.color.farbaVnutraRuciciek, null)); //this.farbaPozadia);
+        this.farbaZnaciek = sp.getInt("FARBAZNACIEK", ResourcesCompat.getColor(getResources(), R.color.farbaZnaciek, null));  // Color.WHITE);
+        this.farbaCisel = sp.getInt("FARBACISEL", ResourcesCompat.getColor(getResources(), R.color.farbaCisel, null)); // Color.WHITE);
+        this.farbaTiena = sp.getInt("FARBATIENA", ResourcesCompat.getColor(getResources(), R.color.farbaTiena, null));  //  Color.GRAY);
+        this.farbaObvodovejCiary = sp.getInt("FARBAOBVODOVEJCIARY", ResourcesCompat.getColor(getResources(), R.color.farbaObvodovejCiary, null));  // Color.rgb(80,100,60));
+
+        this.farbaVnutraObvodovejCiary = sp.getInt("FARBAVNUTRAOBVODOVEJCIARY", ResourcesCompat.getColor(getResources(), R.color.farbaVnutraObvodovejCiary, null)); // Color.rgb(5, 20, 20));
+
+        this.farbaVnutraObvodovejCiaryGradient = sp.getInt("FARBAVNUTRAOBVODOVEJCIARYGRADIENT", ResourcesCompat.getColor(getResources(), R.color.farbaVnutraObvodovejCiaryGradient, null));  // Color.rgb(5, 20, 20));
+
+        this.farbaSekundovejRucicky = sp.getInt("FARBASEKUNDOVEJRUCICKY", ResourcesCompat.getColor(getResources(), R.color.farbaSekundovejRucicky, null)); // Color.rgb(50,50,50));
+
+        this.farbaVnutraSekundovejRucicky = sp.getInt("FARBAVNUTRASEKUNDOVEJRUCICKY", ResourcesCompat.getColor(getResources(), R.color.farbaVnutraSekundovejRucicky, null)); // Color.rgb(50,50,50));
+
+        this.farbaVysuvnikaSekundovejRucicky = sp.getInt("FARBAVYSUVNIKASEKUNDOVEJRUCICKY", ResourcesCompat.getColor(getResources(), R.color.farbaVysuvnikaSekundovejRucicky, null)); // Color.rgb(50,50,50));
+
+        this.farbaOzdobnehoKruhu = sp.getInt("FARBAOZDOBNEHOKRUHU", ResourcesCompat.getColor(getResources(), R.color.farbaOzdobnehoKruhu, null));  //  Color.rgb(20, 60, 70));
+        this.farbaOzdobnychLucov = sp.getInt("FARBAOZDOBNYCHLUCOV",ResourcesCompat.getColor(getResources(), R.color.farbaOzdobnychLucov, null));  //  Color.rgb(50, 40, 78));
+
+//        if(nazovOdkladaciehoSuboru == "MojeUserPrefs")
+//            Toast.makeText(this, "Settings Restored", Toast.LENGTH_SHORT).show();
+
     }
 
 

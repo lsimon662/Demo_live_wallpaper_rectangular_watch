@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="farbaPozadia">#016045</color>
+    <color name="farbaPozadia">#054332</color>
 
     <color name="farbaPozadiaGradient">#022C1E</color>
 
@@ -13,9 +13,9 @@
 
     <color name="farbaVnutraRuciciek">#053E35</color>
 
-    <color name="farbaZnaciek">#FFFFFFFF</color>
+    <color name="farbaZnaciek">#095738</color>
 
-    <color name="farbaCisel">#FFFFFFFF</color>
+    <color name="farbaCisel">#1DE9B6</color>
 
     <color name="farbaTiena">#393838</color>
 
@@ -29,7 +29,7 @@
 
     <color name="farbaVnutraSekundovejRucicky">#0C3724</color>
 
-    <color name="farbaVysuvnikaSekundovejRucicky">#F622BA</color>
+    <color name="farbaVysuvnikaSekundovejRucicky">#F622EB</color>
 
     <color name="farbaOzdobnehoKruhu">#0A2E20</color>
 
