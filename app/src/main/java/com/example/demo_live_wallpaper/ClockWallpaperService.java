@@ -47,7 +47,7 @@ public class ClockWallpaperService extends WallpaperService {
         private boolean displayHandSec;
         private AnalogClock clock;
         private SharedPreferences prefs;
-        Canvas platno;
+        // Canvas platno;
         // kontrola git
 
         public ClockWallpaperEngine() {
@@ -127,9 +127,13 @@ public class ClockWallpaperService extends WallpaperService {
 
         private void draw(Canvas canvas) {
             canvas.drawColor(bgColor);
-            clock.config(width / 2, height / 2, (int) (width * 0.6f),
-                    new Date(), paint, colors, displayHandSec);
-            clock.inicializujHodiny();
+//            clock.config(width / 2, height / 2, (int) (width * 0.6f),
+//                    new Date(), paint, colors, displayHandSec);
+
+            clock.config(width, height,
+                    new Date());
+
+            // clock.inicializujHodiny();
             clock.draw(canvas);
         }
 

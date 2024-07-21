@@ -19,7 +19,7 @@ public class Cifernik {
         body = new Bod[pocetDielikov];
     }
 
-    class Bod {
+    class Bod {   // tu to je dopletene int a double
         int xOva;
         int yOva;
 
@@ -28,19 +28,17 @@ public class Cifernik {
             this.yOva = yOva;
         }
 
-        int getX() {
-            return this.xOva;
-        };
+        int getX() { return this.xOva; }
 
         int getY() {
             return this.yOva;
-        };
+        }
 
         double dlzka(double x1, double y1) {
             double x2 = this.xOva;
             double y2 = this.yOva;
             return Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
-        };
+        }
 
         double uhol(double x1, double y1) {
             double x2 = this.xOva;
@@ -58,8 +56,8 @@ public class Cifernik {
                 pomocnyUhol = Math.PI / 2.0;
 
             return pomocnyUhol;
-        };
-       }
+        }
+    }
 
         Bod point_L_U(int okraj, int radius, int oknoSirka, int oknoVyska) {  // Left - Upper
             return new Bod(okraj, okraj + radius);

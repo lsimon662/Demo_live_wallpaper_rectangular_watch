@@ -3,6 +3,8 @@ package com.example.demo_live_wallpaper;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,7 +14,10 @@ import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -26,6 +31,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.view.MenuCompat;
 
 import java.util.Date;
 
@@ -35,20 +41,21 @@ public class ClockApplication extends AppCompatActivity {
 
     androidx.appcompat.app.AlertDialog.Builder zostava;
 
-    private Paint paint;
-    private int[] colors = { 0xFFFF0000, 0xFF0000FF, 0xFFA2BC13 };
+    // private Paint paint;
+    // private int[] colors = { 0xFFFF0000, 0xFF0000FF, 0xFFA2BC13 };
     // private int bgColor;
-    private float width;
-    private float height;
+    // private float width;
+    // private float height;
     // private boolean visible = true;
     private boolean displayHandSec = true;
     private AnalogClock analogClock;
     View decorView;
     int uiOptions;
+    // Thread thread;
     // ConstraintLayout rozlozenie;
     // private SharedPreferences prefs;
 
-    Handler h;
+    // Handler h;
     int barva, mojaUvodnaFarba;
 
 
@@ -56,9 +63,51 @@ public class ClockApplication extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        decorView = getWindow().getDecorView();
+
+        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+
+        // getSupportActionBar().setHideOnContentScrollEnabled(false);
+        // getSupportActionBar().setShowHideAnimationEnabled(false);
+        // getSupportActionBar().hide();
+        // getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // nevypinaj screen
+        // getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+        if(Build.VERSION.SDK_INT >= 19) {
+            // Toast.makeText(this, "SDK >= 19", Toast.LENGTH_SHORT).show();
+            setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, true);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            getWindow().setNavigationBarColor(Color.TRANSPARENT);
+        }
+
+        // getWindow().setStatusBarColor(R.color.purple_700);
+
+        // getSupportActionBar().hide();
+
+        // getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+        decorView.setSystemUiVisibility(uiOptions);
+
         setContentView(R.layout.activity_clock_application);
 
         analogClock = (AnalogClock) findViewById(R.id.analogClock);
+
+        try {
+            analogClock.vyberZoSharedPreferences("MojeUserPrefs");
+        } catch (Exception e) {
+            analogClock.nastavUvodneHodnoty();
+            e.printStackTrace();
+        }
 
         // analogClock.nastavUvodneHodnoty();
 
@@ -68,17 +117,19 @@ public class ClockApplication extends AppCompatActivity {
 
         // analogClock.nastavUvodneHodnoty();
 
-        width = (float) analogClock.getWidth();
-        height = (float) analogClock.getHeight();
+        // width = (float) analogClock.getWidth();
+        // height = (float) analogClock.getHeight();
 
         // c = (Canvas) hodiny.platno;
 
         new Thread(new Task()).start();
 
-        h = new Handler(Looper.getMainLooper());
+        // thread = Thread.currentThread();
+
+        // h = new Handler(Looper.getMainLooper());
 
         barva = ResourcesCompat.getColor(getResources(), R.color.your_color, null);
-        System.out.println("*** ClockApplication  *** onCreate *** barva " + barva + " width " + analogClock.getWidth() + " height " + analogClock.getHeight());
+        // System.out.println("*** ClockApplication  *** onCreate *** barva " + barva + " width " + analogClock.getWidth() + " height " + analogClock.getHeight());
 
     }
 
@@ -90,23 +141,67 @@ public class ClockApplication extends AppCompatActivity {
 
         @Override
         public void run() {
-           /* for (int i = 0; i <= max; i++) {
-                final int value = i; */
-            while (true) {
-                try {
-                    Thread.sleep(50);
+         while (true) {
+                 try {
+                    Thread.sleep(100);
+                    // System.out.println(" thread " + thread);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                System.out.println("*** ClockApplication  *** onCreate *** barva " + barva + " width " + analogClock.getWidth() + " height " + analogClock.getHeight());
-                analogClock.config(analogClock.getWidth() >> 1, analogClock.getHeight() >> 1, (int) (analogClock.getWidth() * 0.6f),
-                        new Date(), paint, colors, displayHandSec);
-                analogClock.inicializujHodiny();
-                analogClock.invalidate();
-                // analogClock.postInvalidateDelayed(50);
-            }
-           //  }
+                analogClock.config(analogClock.getWidth(), analogClock.getHeight(), new Date());
+                 // analogClock.inicializujHodiny();
+                 // analogClock.invalidate();
+                 analogClock.postInvalidateDelayed(50);
+
+        //    }
+             }
+         }
+    }
+
+    private void setWindowFlag(int i, boolean b) {
+        Window win = getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        if(b) {
+            winParams.flags |= i;
+        } else
+            winParams.flags &= ~i;
+        {
+            win.setAttributes(winParams);
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        // Toast.makeText(this, "Dotyk obrazovky", Toast.LENGTH_SHORT).show();
+        if(!getSupportActionBar().isShowing() && event.getAction() == MotionEvent.ACTION_DOWN) {
+            // if(uiOptions > 0  && event.getDownTime() < 7000000) {
+            // Toast.makeText(this, "Dotyk obrazovky ukaz status bar " + event.toString(), Toast.LENGTH_SHORT).show();
+            // getSupportActionBar().show();
+            // getWindow().setStatusBarColor(farbaPozadia);
+            decorView.setSystemUiVisibility(0);
+            event.setAction(MotionEvent.ACTION_UP);
+        }
+        else {
+            // decorView.setSystemUiVisibility(uiOptions);
+            if(getSupportActionBar().isShowing() && event.getAction() == MotionEvent.ACTION_DOWN) {
+                // Toast.makeText(this, "Dotyk obrazovky skry status bar", Toast.LENGTH_SHORT).show();
+                decorView = getWindow().getDecorView();
+                // this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 0x00000000);
+                // int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+
+                uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+                // getSupportActionBar().hide();
+                decorView.setSystemUiVisibility(uiOptions);
+            }
+        }
+        return false;
+        // return super.onTouchEvent(event);
+        // return super.onTouchEvent(event);
     }
 
     @Override
@@ -114,10 +209,11 @@ public class ClockApplication extends AppCompatActivity {
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_settings, menu);
+        MenuCompat.setGroupDividerEnabled(menu, true);
+
+        nastavMenu(menu);
 
         return true;
-
-//        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -152,6 +248,11 @@ public class ClockApplication extends AppCompatActivity {
         nastavMenu(menu);
 
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void onOptionsMenuClosed(Menu menu) {
+        super.onOptionsMenuClosed(menu);
     }
 
     public void nastavMenu(Menu menu) {
@@ -292,7 +393,6 @@ public class ClockApplication extends AppCompatActivity {
         else
             menu.findItem(R.id.angle).setChecked(false);
 
-        return;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -806,7 +906,7 @@ public class ClockApplication extends AppCompatActivity {
 
                 LinearLayout linear_po = new LinearLayout(this);
 
-                linear_po.setOrientation(LinearLayout.HORIZONTAL);
+                linear_po.setOrientation(LinearLayout.VERTICAL);
 
                 SeekBar seek_po = new SeekBar(this);
                 seek_po.setMin(10);
@@ -879,7 +979,7 @@ public class ClockApplication extends AppCompatActivity {
 
                 LinearLayout linear_vo = new LinearLayout(this);
 
-                linear_vo.setOrientation(LinearLayout.HORIZONTAL);
+                linear_vo.setOrientation(LinearLayout.VERTICAL);
 
                 SeekBar seek_vo = new SeekBar(this);
                 seek_vo.setMin(0);
@@ -951,7 +1051,7 @@ public class ClockApplication extends AppCompatActivity {
 
                 LinearLayout linear_vz = new LinearLayout(this);
 
-                linear_vz.setOrientation(LinearLayout.HORIZONTAL);
+                linear_vz.setOrientation(LinearLayout.VERTICAL);
 
                 SeekBar seek_vz = new SeekBar(this);
                 seek_vz.setMin(40);
@@ -1022,7 +1122,7 @@ public class ClockApplication extends AppCompatActivity {
 
                 LinearLayout linear_hk = new LinearLayout(this);
 
-                linear_hk.setOrientation(LinearLayout.HORIZONTAL);
+                linear_hk.setOrientation(LinearLayout.VERTICAL);
 
                 SeekBar seek_hk = new SeekBar(this);
                 seek_hk.setMin(1);
@@ -1094,7 +1194,7 @@ public class ClockApplication extends AppCompatActivity {
 
                 LinearLayout linear_oc = new LinearLayout(this);
 
-                linear_oc.setOrientation(LinearLayout.HORIZONTAL);
+                linear_oc.setOrientation(LinearLayout.VERTICAL);
 
                 SeekBar seek_oc = new SeekBar(this);
                 seek_oc.setMin(-48);

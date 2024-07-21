@@ -32,9 +32,9 @@ import java.util.Date;
 public class AnalogClock extends View {
 
         /** center X. */
-        private float x;
+        // int x;
         /** center Y. */
-        private float y;
+        // int y;
         // int radius;
         private Calendar cal;
         private Paint kresba;
@@ -45,7 +45,7 @@ public class AnalogClock extends View {
         private int[] colors;
         private boolean displayHandSec;
 
-        private int sirka, vyska, vyska_neredukovana;
+        int sirka, vyska, vyska_neredukovana;
 
         private int vypln = 0;          // padding
         private int velkostPisma;
@@ -62,24 +62,24 @@ public class AnalogClock extends View {
         // private int[] cisla = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
         private String[] cisla_arabske = {"12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"};
         private String[] cisla_rimske = {"XII", "I", "II", "III", "IIII", "V", "VI", "VII", "VIII", "IX", "X", "XI"};
-        Rect pravouholnik = new Rect();
+        Rect pravouholnik = new Rect(); // kvoli rozmerom cisla
 
         String mojPolomer;     // polomer rohou
-    String mojTextOdsad;   // ogray
-    String mojTextZosuv;
-    String mojTextPoloha;
-    String mojaHrubkaObvodovejCiary;
-    String mojeOdsadenieObvodovejCiary;
+        String mojTextOdsad;   // ogray
+        String mojTextZosuv;
+        String mojTextPoloha;
+        String mojaHrubkaObvodovejCiary;
+        String mojeOdsadenieObvodovejCiary;
 
-    int farbaPozadia;
-    int farbaRuciciek;
-    int farbaVnutraRuciciek;
-    int farbaZnaciek;
-    int farbaCisel;
-    int farbaTiena;
-    int farbaObvodovejCiary;
-    int farbaVnutraObvodovejCiary;
-    int farbaSekundovejRucicky;
+        int farbaPozadia;
+        int farbaRuciciek;
+        int farbaVnutraRuciciek;
+        int farbaZnaciek;
+        int farbaCisel;
+        int farbaTiena;
+        int farbaObvodovejCiary;
+        int farbaVnutraObvodovejCiary;
+        int farbaSekundovejRucicky;
     int farbaOzdobnehoKruhu;
     int farbaOzdobnychLucov;
     int farbaVysuvnikaRuciciek;
@@ -127,6 +127,8 @@ public class AnalogClock extends View {
     int mojaUvodnaFarba;
     // private int umiestnenie, umiestnenie2;
     Shader shader;
+    private int dlzkaPoZnacku;
+    private double uholZnacky;
 
     int polomer, okraj, min, min_bez_okraja;
 
@@ -140,18 +142,23 @@ public class AnalogClock extends View {
     public AnalogClock(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         System.out.println("Start z XML constructor c. 2 " + attrs.getPositionDescription() + " sirka " + getWidth());
-         nastavUvodneHodnoty();
+        nastavUvodneHodnoty();
         // inicializujHodiny();
     }
 
 
-    public void config(float x, float y, int size, Date date, Paint paint, int[] colors, boolean displayHandSec) {
-             this.x = x;
-             this.y = y;
-        System.out.println("*** config  x " + this.x + " y " + this.y);
-            this.sirka = (int) (x * 2.0);  // kvoli kompatibilite
-            this.vyska_neredukovana = (int) (y * 2.0);
-        System.out.println("*** config vyska_neredukovana " + vyska_neredukovana + " sirka " + this.sirka + " x " + x + " y " + y);
+    public void config(int x, int y, Date date) {
+             // this.x = (int) x;
+             // this.y = (int) y;
+            // System.out.println("*** config  x " + x + " y " + y);
+            // this.sirka = (int) (x * 2.0);  // kvoli kompatibilite
+            // this.sirka = (int) x << 1;  // kvoli kompatibilite
+
+            this.sirka = x;  // kvoli kompatibilite
+//            this.vyska_neredukovana = (int) (y * 2.0);
+            // this.vyska_neredukovana = (int) y << 1;
+            this.vyska_neredukovana = y;
+            // System.out.println("*** config vyska_neredukovana " + vyska_neredukovana + " sirka " + this.sirka + " x " + x + " y " + y);
 
             // this.kresba = paint;
              // this.colors = colors;
@@ -159,9 +166,9 @@ public class AnalogClock extends View {
 
             // cal.setTime(date);
         
-        }
+        // }
 
-    public void inicializujHodiny() {      // initClock
+    // public void inicializujHodiny() {      // initClock
 
         // this.vyska = zosuv_per * getHeight() / 100;   //
         this.vyska = zosuv_per * this.vyska_neredukovana / 100;   //
@@ -176,9 +183,9 @@ public class AnalogClock extends View {
         vypln = medzeraOdCisiel + 80;
         velkostPisma = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 20, getResources().getDisplayMetrics());
 
-        // polomer = min / 4 - vypln; // preco je zamiesany polomer s polohou cisel
+        polomer = min / 4 - vypln; // preco je zamiesany polomer s polohou cisel
 
-        System.out.println("*** inicializuj vyska_neredukovana " + this.vyska_neredukovana + " sirka " + this.sirka + " polomer " + polomer);
+//        System.out.println("*** inicializuj vyska_neredukovana " + this.vyska_neredukovana + " sirka " + this.sirka + " polomer " + polomer);
 
         skratenieRucicky = min / 20;
         skratenieHodinovejRucicky = min / 7;
@@ -221,8 +228,8 @@ public class AnalogClock extends View {
                 if(hrubkaObvodovejCiary < 1) hrubkaObvodovejCiary = 1;
                 if(hrubkaObvodovejCiary > 128) hrubkaObvodovejCiary = 128;
 
-                System.out.println("Hrubka obvodovej ciary : " + hrubkaObvodovejCiary);} catch(NumberFormatException nfe) {
-                System.out.println("Could not parse " + nfe); }
+                 System.out.println("Hrubka obvodovej ciary : " + hrubkaObvodovejCiary);} catch(NumberFormatException nfe) {
+                 System.out.println("Could not parse " + nfe); }
 
         if(mojeOdsadenieObvodovejCiary != "" && mojeOdsadenieObvodovejCiary != null)
             try {
@@ -230,8 +237,8 @@ public class AnalogClock extends View {
                 if(odsadenieObvodovejCiary > 128) odsadenieObvodovejCiary = 128;
                 if(odsadenieObvodovejCiary < -48) odsadenieObvodovejCiary = -48;
 
-                System.out.println("Odsadenie obvodovej ciary / -47 to 127 / : " + odsadenieObvodovejCiary);} catch(NumberFormatException nfe) {
-                System.out.println("Could not parse " + nfe); }
+                 System.out.println("Odsadenie obvodovej ciary / -47 to 127 / : " + odsadenieObvodovejCiary);} catch(NumberFormatException nfe) {
+                 System.out.println("Could not parse " + nfe); }
 
         cal = Calendar.getInstance();
         kresba = new Paint();
@@ -241,7 +248,7 @@ public class AnalogClock extends View {
     }
 
     protected void onDraw(Canvas platno) {
-            super.onDraw(platno);
+            // super.onDraw(platno);
 
             if (kresba != null && sirka > 0 && vyska > 0) {
 
@@ -253,13 +260,15 @@ public class AnalogClock extends View {
                 } else
                     kresba.setColor(farbaPozadia);
 
+//                Thread thread = Thread.currentThread();
+//                System.out.println(" *** thread onDraw " + thread);
+
+                // platno.drawRect(new RectF(0, 0, sirka, vyska_neredukovana), kresba);
+
                 platno.drawRect(new RectF(0, 0, sirka, vyska_neredukovana), kresba);
                 kresba.setShader(null);
 
                 kresba.setColor(farbaPozadia);
-
-//                umiestnenie =  cal.get(Calendar.SECOND) * 25 + cal.get(Calendar.MILLISECOND) / 40;
-//                umiestnenie2 =  cal.get(Calendar.SECOND) * 100 + cal.get(Calendar.MILLISECOND) / 10;
 
                 kresliPevneCiary(platno, 0,0,farbaPozadia);
                 platno.save();
@@ -278,13 +287,17 @@ public class AnalogClock extends View {
 
                 kresliBody(platno, 0,0, farbaZnaciek);
 
-                 platno.save();
+                platno.save();
 
-                if(b_arabic_numbers)
-                    kresliCisla(platno, cisla_arabske, 0,0, farbaCisel);
+                if(b_arabic_numbers) {
+                    medzeraOdCisiel = 0;
+                    kresliCisla(platno, cisla_arabske, 0, 0, farbaCisel);
+                }
 
-                if(b_roman_numbers)
-                    kresliCisla(platno, cisla_rimske, 0,0, farbaCisel);
+                if(b_roman_numbers) {
+                    medzeraOdCisiel = 25;
+                    kresliCisla(platno, cisla_rimske, 0, 0, farbaCisel);
+                }
 
                  platno.save();
 
@@ -293,17 +306,7 @@ public class AnalogClock extends View {
         }
 
 
-
-    public void kresliPevneCiary(Canvas platno, int posunT_X, int posunT_Y, int farba) {
-
-        if(h_background_gradient) {
-            System.out.println("*** ClockApplication  *** kresliPevneCiary *** barva " + mojaUvodnaFarba + " width " + sirka + " height " + vyska_neredukovana);
-            shader = new RadialGradient(sirka / 2, vyska_neredukovana / 2, vyska_neredukovana / 2,
-                    farbaPozadia, farbaPozadiaGradient, Shader.TileMode.CLAMP);
-            // Paint paint = new Paint();
-            kresba.setShader(shader);
-        } else
-            kresba.setColor(farbaPozadia);
+        public void kresliPevneCiary(Canvas platno, int posunT_X, int posunT_Y, int farba) {
 
         if(h_inner_contour_gradient) {
             shader = new RadialGradient(sirka / 2, vyska_neredukovana / 2, vyska_neredukovana / 4,
@@ -313,8 +316,59 @@ public class AnalogClock extends View {
         else
             kresba.setShader(null);
 
+        /*    if(mojPolomer != "" && mojPolomer != null)
+                try { polomer = Integer.parseInt(mojPolomer);
+                    if(polomer < 5) polomer = 5;
+                    if(polomer > 320) polomer = 320;
+                    // okraj = Integer.parseInt(mojTextOdsad);
+                    // System.out.println("Polomer : " + polomer);
+                } catch(NumberFormatException nfe) {
+                    System.out.println("Could not parse " + nfe); }
 
-        if (b_top)
+            if(mojTextOdsad != "" && mojTextOdsad != null) {
+                try {
+                    okraj = Integer.parseInt(mojTextOdsad);
+                    if (okraj < 0) okraj = 0;
+                    if (okraj > 360) okraj = 360;
+
+                    System.out.println("Okraj : " + okraj);
+                } catch (NumberFormatException nfe) {
+                    System.out.println("Could not parse " + nfe);
+                }
+            }
+
+            if(mojTextZosuv != "" && mojTextZosuv != null)
+                try {
+                    zosuv_per = Integer.parseInt(mojTextZosuv);
+                    if(zosuv_per < 40)
+                        zosuv_per = 40;
+                    if(zosuv_per > 100)
+                        zosuv_per = 100;
+
+                    System.out.println("Zosuv [%] : " + zosuv_per);} catch(NumberFormatException nfe) {
+                    System.out.println("Could not parse " + nfe); }
+
+            if(mojaHrubkaObvodovejCiary != "" && mojaHrubkaObvodovejCiary != null)
+                try {
+                    hrubkaObvodovejCiary = Integer.parseInt(mojaHrubkaObvodovejCiary);
+                    if(hrubkaObvodovejCiary < 1) hrubkaObvodovejCiary = 1;
+                    if(hrubkaObvodovejCiary > 128) hrubkaObvodovejCiary = 128;
+
+                    System.out.println("Hrubka obvodovej ciary : " + hrubkaObvodovejCiary);} catch(NumberFormatException nfe) {
+                    System.out.println("Could not parse " + nfe); }
+
+            if(mojeOdsadenieObvodovejCiary != "" && mojeOdsadenieObvodovejCiary != null)
+                try {
+                    odsadenieObvodovejCiary = Integer.parseInt(mojeOdsadenieObvodovejCiary);
+                    if(odsadenieObvodovejCiary > 128) odsadenieObvodovejCiary = 128;
+                    if(odsadenieObvodovejCiary < -48) odsadenieObvodovejCiary = -48;
+
+                    System.out.println("Odsadenie obvodovej ciary / -47 to 127 / : " + odsadenieObvodovejCiary);} catch(NumberFormatException nfe) {
+                    System.out.println("Could not parse " + nfe); }
+*/
+
+
+            if (b_top)
             zosuv = 0;    // TOP
 
 
@@ -527,8 +581,8 @@ public class AnalogClock extends View {
         int dlzkaCiarky = 50;
 
         // *********************** tu uz kresli znacky
-        int dlzkaPoZnacku;
-        double uholZnacky;
+        /*int dlzkaPoZnacku;
+        double uholZnacky;*/
         kresba.setStrokeWidth(10);
         kresba.setColor(farba);
 
@@ -780,12 +834,12 @@ public class AnalogClock extends View {
         // kresba.setStrokeCap(Paint.Cap.SQUARE);
         // Double uhol = Math.PI * umiestnenie / 30 - Math.PI / 2;
         if(h_continouos) {
-            uhol = cfj.body[umiestnenie].uhol((float) sirka / 2.0f, (float) (vyska / 2.0f));
-            polomerRucicky = (int) (cfj.body[umiestnenie].dlzka((float) sirka / 2.0f, (float) (vyska / 2.0f)));
+            uhol = cfj.body[umiestnenie].uhol( sirka >> 1, vyska >> 1);
+            polomerRucicky = (int) (cfj.body[umiestnenie].dlzka(sirka >> 1, vyska >> 1));
         }
         else {
-            uhol = cf.body[umiestnenie].uhol(sirka / 2.0f, vyska / 2.0f);
-            polomerRucicky = (int) (cf.body[umiestnenie].dlzka(sirka / 2.0f, (vyska) / 2.0f));
+            uhol = cf.body[umiestnenie].uhol(sirka >> 1, vyska >> 1);
+            polomerRucicky = (int) (cf.body[umiestnenie].dlzka(sirka >> 1, vyska >> 1));
         }
 
         /*if(h_line) {
@@ -960,7 +1014,7 @@ public class AnalogClock extends View {
         int min = Math.min(vyska - okraj, sirka - okraj);
 
         if(h_continouos) {
-            uhol = cfj.body[umiestnenie].uhol(sirka / 2, vyska / 2);
+            uhol = cfj.body[umiestnenie].uhol(sirka >> 1, vyska >> 1);
             polomerRucicky = (int) (cfj.body[umiestnenie].dlzka(sirka / 2, vyska / 2));
         }
         else {
@@ -1146,9 +1200,12 @@ public class AnalogClock extends View {
             kresba.setShadowLayer(4f, 7f,4f, farbaTiena);
 
         for(int cislo = 1; cislo <= cisla.length; cislo++) {
-            // System.out.println(" cislo " + cislo + " sirka " + (sirka >> 1) + " vyska " + (vyska >> 1) + " cisla.length " + cisla.length);
-            dlzkaPoZnacku = (int) (cf.body[(cislo - 1) * 5].dlzka(sirka >> 1, vyska >> 1));
-            uholZnacky = (double) (cf.body[(cislo - 1) * 5].uhol(sirka >> 1, vyska >> 1));
+//            System.out.println("a cislo " + cislo + " sirka " + (this.sirka >> 1) + " vyska " + (this.vyska >> 1) + " cisla.length " + cisla.length);
+//             System.out.println("b cislo " + cislo + " sirka " + (sirka / 2) + " vyska " + (vyska / 2) + " cisla.length " + cisla.length);
+//            System.out.println("c cislo " + cislo + " sirka " + sirka + " vyska " + vyska + " cisla.length " + cisla.length);
+            // tu je vecne problem asi typy int a double nesedia
+            dlzkaPoZnacku = (int) (cf.body[(cislo - 1) * 5].dlzka(sirka / 2, vyska / 2));
+            uholZnacky = (double) (cf.body[(cislo - 1) * 5].uhol(sirka / 2, vyska / 2));
             // String docasny = String.valueOf(cislo - 1);
 
             // kresba.getTextBounds(docasny, 0, docasny.length(), pravouholnik);
@@ -1169,7 +1226,7 @@ public class AnalogClock extends View {
     private void kresliStred(Canvas platno, int posunT_X, int posunT_Y, int priemer,int farba) {
         kresba.setStyle(Paint.Style.FILL);
         kresba.setColor(farba);
-        platno.drawCircle(sirka / 2.0f + posunT_X, vyska / 2.0f + zosuv / 2.0f + posunT_Y,priemer, kresba);
+        platno.drawCircle(this.sirka / 2.0f + posunT_X, this.vyska / 2.0f + zosuv / 2.0f + posunT_Y,priemer, kresba);
     }
 
     void nastavUvodneHodnoty() {
