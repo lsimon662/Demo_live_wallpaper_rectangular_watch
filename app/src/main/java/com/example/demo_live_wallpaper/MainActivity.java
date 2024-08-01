@@ -77,6 +77,14 @@ public class MainActivity extends Activity {
 
     }
 
+    public void surfaceViewShowApplication(View view) {
+
+        Intent akcia = new Intent(this, SurfaceViewClockApplication.class);
+
+        startActivity(akcia);
+
+    }
+
     public void exit(View v) {
         System.exit(0);
     }

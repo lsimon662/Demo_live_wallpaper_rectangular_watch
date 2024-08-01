@@ -151,7 +151,7 @@ public class ClockApplication extends AppCompatActivity {
                 analogClock.config(analogClock.getWidth(), analogClock.getHeight(), new Date());
                  // analogClock.inicializujHodiny();
                  // analogClock.invalidate();
-                 analogClock.postInvalidateDelayed(50);
+                analogClock.postInvalidateDelayed(50);
 
         //    }
              }

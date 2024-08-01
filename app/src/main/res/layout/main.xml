@@ -30,6 +30,14 @@ android:layout_height="fill_parent" >
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:onClick="surfaceViewShowApplication"
+        android:text="@string/surface_view_show_source" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_marginBottom="20dp"
         android:onClick="exit"
         android:text="@string/exit" />

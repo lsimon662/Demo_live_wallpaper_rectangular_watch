@@ -9,6 +9,7 @@
     <string name="disabled">disabled</string>
     <string name="show_screencast">Show Clock Application</string>
     <string name="show_source">Show source code</string>
+    <string name="surface_view_show_source">Surface View Application</string>
     <string name="other_apps">Other Apps</string>
     <string name="copy_ssaurel">(c) ls</string>
 
