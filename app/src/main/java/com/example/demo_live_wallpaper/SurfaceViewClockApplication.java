@@ -7,13 +7,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuCompat;
 
 import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -32,7 +37,42 @@ public class SurfaceViewClockApplication extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_surface_view_clock_application);
+
+        decorView = getWindow().getDecorView();
+
+        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+
+        // getSupportActionBar().setHideOnContentScrollEnabled(false);
+        // getSupportActionBar().setShowHideAnimationEnabled(false);
+        // getSupportActionBar().hide();
+        // getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // nevypinaj screen
+        // getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+        if(Build.VERSION.SDK_INT >= 19) {
+            // Toast.makeText(this, "SDK >= 19", Toast.LENGTH_SHORT).show();
+            setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, true);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            getWindow().setNavigationBarColor(Color.TRANSPARENT);
+        }
+
+        // getWindow().setStatusBarColor(R.color.purple_700);
+
+        // getSupportActionBar().hide();
+
+        // getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+        decorView.setSystemUiVisibility(uiOptions);
+
+        // setContentView(R.layout.activity_surface_view_clock_application);
 
         mySurface = new MySurface(getApplicationContext());
         setContentView(mySurface);
@@ -50,6 +90,51 @@ public class SurfaceViewClockApplication extends AppCompatActivity {
         System.exit(0);
     }
 
+    private void setWindowFlag(int i, boolean b) {
+        Window win = getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        if(b) {
+            winParams.flags |= i;
+        } else
+            winParams.flags &= ~i;
+        {
+            win.setAttributes(winParams);
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        // Toast.makeText(this, "Dotyk obrazovky", Toast.LENGTH_SHORT).show();
+        if(!getSupportActionBar().isShowing() && event.getAction() == MotionEvent.ACTION_DOWN) {
+            // if(uiOptions > 0  && event.getDownTime() < 7000000) {
+            // Toast.makeText(this, "Dotyk obrazovky ukaz status bar " + event.toString(), Toast.LENGTH_SHORT).show();
+            // getSupportActionBar().show();
+            // getWindow().setStatusBarColor(farbaPozadia);
+            decorView.setSystemUiVisibility(0);
+            event.setAction(MotionEvent.ACTION_UP);
+        }
+        else {
+            // decorView.setSystemUiVisibility(uiOptions);
+            if(getSupportActionBar().isShowing() && event.getAction() == MotionEvent.ACTION_DOWN) {
+                // Toast.makeText(this, "Dotyk obrazovky skry status bar", Toast.LENGTH_SHORT).show();
+                decorView = getWindow().getDecorView();
+                // this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 0x00000000);
+                // int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+
+                uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+                // getSupportActionBar().hide();
+                decorView.setSystemUiVisibility(uiOptions);
+            }
+        }
+        return false;
+        // return super.onTouchEvent(event);
+        // return super.onTouchEvent(event);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

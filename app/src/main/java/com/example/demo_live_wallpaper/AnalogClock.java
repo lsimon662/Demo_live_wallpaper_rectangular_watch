@@ -242,6 +242,8 @@ public class AnalogClock extends View {
 
         cal = Calendar.getInstance();
         kresba = new Paint();
+        kresba.setAntiAlias(true);
+        kresba.setDither(true);
         jeInicializovana = true; // isInit
         cf = new Cifernik(60);     // pre kreslenie cifernika a sekundovy beh
         cfj = new Cifernik(1500);  // pre jemny beh

@@ -46,7 +46,7 @@ public class MySurface extends SurfaceView {
         int counter = 0;
         int counter_past;
 
-        boolean h_rect_ca = true;
+        // boolean h_rect_ca = true;
         int okraj;
         int polomer;
         boolean h_continouos;
@@ -121,6 +121,7 @@ public class MySurface extends SurfaceView {
             if (canvas != null) {
                 int sirka = canvas.getWidth();
                 int vyska = canvas.getHeight();
+                // paint.setAntiAlias(true);
 
                /* canvas.drawColor(Color.BLACK);
                 paint = new Paint(Paint.ANTI_ALIAS_FLAG);
