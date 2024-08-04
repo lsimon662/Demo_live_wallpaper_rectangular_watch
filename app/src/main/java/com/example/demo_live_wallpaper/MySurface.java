@@ -119,9 +119,9 @@ public class MySurface extends SurfaceView {
             canvas = holder.lockCanvas();
 
             if (canvas != null) {
+
                 int sirka = canvas.getWidth();
                 int vyska = canvas.getHeight();
-                // paint.setAntiAlias(true);
 
                /* canvas.drawColor(Color.BLACK);
                 paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -146,7 +146,7 @@ public class MySurface extends SurfaceView {
 
                 Bitmap bitmap2 = BitmapFactory.decodeResource(getContext().getResources(), img_ids2);
                 clockDialScaled2 = Bitmap.createScaledBitmap(bitmap2, sirka / 4, sirka / 8, false);
-                canvas.drawBitmap(clockDialScaled2, 3 * sirka / 8, 5 * vyska / 8, paint);
+                canvas.drawBitmap(clockDialScaled2, 3 * sirka / 8, 3 * vyska / 8, paint);
 
 //                paint.setColor(Color.RED);
                 // paint.setStrokeWidth(25);
@@ -171,7 +171,7 @@ public class MySurface extends SurfaceView {
                         (float) (vyska / 2 + sirka / 4 * Math.sin(minuty * Math.PI / 30 - Math.PI / 2)), paint);
 
                 paint.setColor(Color.YELLOW);
-                canvas.drawLine(sirka / 2,
+                canvas.drawLine(sirka / 2,9
                         vyska / 2,
                         (float) (sirka / 2 + sirka / 3 * Math.cos((sekundy * 6 * Math.PI / 180 - Math.PI / 2))),
                         (float) (vyska / 2 + sirka / 3 * Math.sin((sekundy * 6 * Math.PI / 180 - Math.PI / 2))), paint);
@@ -182,7 +182,15 @@ public class MySurface extends SurfaceView {
                         (float) (sirka / 2 + sirka / 3 * Math.cos((sekundy * 6 * Math.PI / 180 - Math.PI / 2) + (milli * Math.PI / 30000))),
                         (float) (vyska / 2 + sirka / 3 * Math.sin((sekundy * 6 * Math.PI / 180 - Math.PI / 2) + (milli * Math.PI / 30000))), paint);
 */
-                holder.unlockCanvasAndPost(canvas);
+
+                try {
+                    holder.unlockCanvasAndPost(canvas);
+                } catch (Exception e)
+                {
+                    System.out.println("No canvas lock");
+                }
+//                holder.unlockCanvasAndPost(canvas);
+
             }
         }
     }

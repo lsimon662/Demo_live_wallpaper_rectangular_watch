@@ -22,6 +22,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import yuku.ambilwarna.AmbilWarnaDialog;
 
@@ -86,9 +87,7 @@ public class SurfaceViewClockApplication extends AppCompatActivity {
 
     }
 
-    public void exit(View v) {
-        System.exit(0);
-    }
+    // public void exit(View v) {System.exit(0);}
 
     private void setWindowFlag(int i, boolean b) {
         Window win = getWindow();
@@ -100,6 +99,24 @@ public class SurfaceViewClockApplication extends AppCompatActivity {
         {
             win.setAttributes(winParams);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        // Toast.makeText(this, "onDestroy", Toast.LENGTH_SHORT).show();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        // Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        // Toast.makeText(this, "onStop", Toast.LENGTH_SHORT).show();
+        super.onStop();
     }
 
     @Override
