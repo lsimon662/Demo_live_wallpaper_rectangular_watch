@@ -6,7 +6,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuCompat;
 
+import android.app.WallpaperManager;
+import android.content.ComponentName;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Build;
@@ -1203,10 +1206,10 @@ public class SurfaceViewClockApplication extends AppCompatActivity {
                 zostava.show();
                 break;
 
-          /*  case R.id.m_set_wallpaper:
+            case R.id.m_set_wallpaper:
 
-                // finishActivity(0);
-                ulozDoSharedPreferences("preWallpaper");
+                finishActivity(0);
+                mySurface.analogClock.ulozDoSharedPreferences("preWallpaper");
 
                 Intent intent = new Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
                 intent.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
@@ -1214,9 +1217,9 @@ public class SurfaceViewClockApplication extends AppCompatActivity {
 
                 startActivity(intent);
 
-                finishAffinity();
+                // finishAffinity();
 
-                break;*/
+                break;
 
             case R.id.m_default_settings:   // zatial len test z citani hodnot
                 // spravne ma byt nastavit menu aj premenne

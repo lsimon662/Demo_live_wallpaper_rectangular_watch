@@ -25,7 +25,6 @@ public class MySurface extends SurfaceView {
     Anim anim;
 
     SurfaceHolder holder;
-
     Canvas canvas;
     Paint paint;
 
@@ -99,6 +98,8 @@ public class MySurface extends SurfaceView {
                         minuty = c.get(Calendar.MINUTE);
                         hodina = c.get(Calendar.HOUR_OF_DAY);
                         milli = c.get(Calendar.MILLISECOND);
+                        // draw(img_ids2[counter / 8]);
+
                         draw(img_ids2[counter / 8]);
 
                         last_updated_time = current_time;
@@ -112,18 +113,27 @@ public class MySurface extends SurfaceView {
             }
         }
 
+
         private void draw(int img_ids2) {
 
             holder = getHolder();
 
+         /*   try {
+                canvas = holder.lockCanvas();
+            } catch (Exception e) {
+                System.out.println("surfaceHolder error");
+            }*/
+
             canvas = holder.lockCanvas();
 
             if (canvas != null) {
+                // canvas = holder.lockCanvas();
 
                 int sirka = canvas.getWidth();
                 int vyska = canvas.getHeight();
+                draw(canvas);
 
-               /* canvas.drawColor(Color.BLACK);
+ /*               canvas.drawColor(Color.BLACK);
                 paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
                 okraj = 50;
@@ -139,11 +149,11 @@ public class MySurface extends SurfaceView {
 //            clock.config(width / 2, height / 2, (int) (width * 0.6f),
 //                    new Date(), paint, colors, displayHandSec);
 
-                analogClock.config(sirka, vyska, new Date());
-
-                // clock.inicializujHodiny();
-                analogClock.draw(canvas);
-
+//                analogClock.config(sirka, vyska, new Date());
+//
+//
+//                analogClock.draw(canvas);
+//
                 Bitmap bitmap2 = BitmapFactory.decodeResource(getContext().getResources(), img_ids2);
                 clockDialScaled2 = Bitmap.createScaledBitmap(bitmap2, sirka / 4, sirka / 8, false);
                 canvas.drawBitmap(clockDialScaled2, 3 * sirka / 8, 3 * vyska / 8, paint);
@@ -185,14 +195,24 @@ public class MySurface extends SurfaceView {
 
                 try {
                     holder.unlockCanvasAndPost(canvas);
-                } catch (Exception e)
-                {
+                } catch (Exception e) {
                     System.out.println("No canvas lock");
                 }
 //                holder.unlockCanvasAndPost(canvas);
 
             }
         }
+        private void draw(Canvas canvas) {
+
+            int sirka = canvas.getWidth();
+            int vyska = canvas.getHeight();
+
+            analogClock.config(sirka, vyska, new Date());
+
+            analogClock.draw(canvas);
+
+        }
+
     }
 
 }
