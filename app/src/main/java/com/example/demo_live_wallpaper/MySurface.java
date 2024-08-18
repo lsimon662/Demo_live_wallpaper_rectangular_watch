@@ -20,12 +20,15 @@ public class MySurface extends SurfaceView {
     float hodina;
     float milli;
     int bgColor;
+
     Bitmap clockDialScaled, clockDialScaled2;
     AnalogClock analogClock;
     Anim anim;
+    Canvas platno = null;
 
-    SurfaceHolder holder;
-    Canvas canvas;
+
+//    SurfaceHolder drziakPovrchu;
+//    Canvas platno;
     Paint paint;
 
     private boolean playing = true;
@@ -99,7 +102,6 @@ public class MySurface extends SurfaceView {
                         hodina = c.get(Calendar.HOUR_OF_DAY);
                         milli = c.get(Calendar.MILLISECOND);
                         // draw(img_ids2[counter / 8]);
-
                         draw(img_ids2[counter / 8]);
 
                         last_updated_time = current_time;
@@ -111,96 +113,48 @@ public class MySurface extends SurfaceView {
                     }
                 }
             }
-        }
 
+        }
 
         private void draw(int img_ids2) {
 
-            holder = getHolder();
+            SurfaceHolder drziakPovrchu;
+//            Canvas platno;
 
-         /*   try {
-                canvas = holder.lockCanvas();
-            } catch (Exception e) {
-                System.out.println("surfaceHolder error");
-            }*/
+            drziakPovrchu = getHolder();
 
-            canvas = holder.lockCanvas();
+            System.out.println(" ***** Thread " + currentThread());
 
-            if (canvas != null) {
-                // canvas = holder.lockCanvas();
+            if(drziakPovrchu.getSurface().isValid() == false) {
 
-                int sirka = canvas.getWidth();
-                int vyska = canvas.getHeight();
-                draw(canvas);
-
- /*               canvas.drawColor(Color.BLACK);
-                paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
-                okraj = 50;
-                polomer = sirka / 3;
-
-                if(h_rect_ca) {
-                    cf.CifernikKU(okraj, polomer, sirka, vyska);
-                    if (h_continouos)
-                        cfj.CifernikKU(okraj, polomer, sirka, vyska);
-                }*/
-
-                // canvas.drawColor(bgColor);
-//            clock.config(width / 2, height / 2, (int) (width * 0.6f),
-//                    new Date(), paint, colors, displayHandSec);
-
-//                analogClock.config(sirka, vyska, new Date());
-//
-//
-//                analogClock.draw(canvas);
-//
-                Bitmap bitmap2 = BitmapFactory.decodeResource(getContext().getResources(), img_ids2);
-                clockDialScaled2 = Bitmap.createScaledBitmap(bitmap2, sirka / 4, sirka / 8, false);
-                canvas.drawBitmap(clockDialScaled2, 3 * sirka / 8, 3 * vyska / 8, paint);
-
-//                paint.setColor(Color.RED);
-                // paint.setStrokeWidth(25);
-//                paint.setTextSize(64);
-//
-//                 canvas.drawLine(sirka / 2,vyska / 2,(float) (sirka / 2 + 450 * Math.cos((float) (counter / 5))),(float) (vyska / 2 + 450 * Math.sin((float) (counter / 5))), paint);
-
-               /* canvas.drawText("" + sekundy, sirka / 2 - 300,vyska / 2 + 300, paint);
-
-                // analogClock.draw(canvas);
-
-                paint.setColor(Color.GREEN);
-                canvas.drawLine(sirka / 2,
-                        vyska / 2,
-                        (float) (sirka / 2 + sirka / 5 * Math.cos(hodina * Math.PI / 6 - Math.PI / 2)),
-                        (float) (vyska / 2 + sirka / 5 * Math.sin(hodina * Math.PI / 6 - Math.PI / 2)), paint);
-
-                paint.setColor(Color.MAGENTA);
-                canvas.drawLine(sirka / 2,
-                        vyska / 2,
-                        (float) (sirka / 2 + sirka / 4 * Math.cos(minuty * Math.PI / 30 - Math.PI / 2)),
-                        (float) (vyska / 2 + sirka / 4 * Math.sin(minuty * Math.PI / 30 - Math.PI / 2)), paint);
-
-                paint.setColor(Color.YELLOW);
-                canvas.drawLine(sirka / 2,9
-                        vyska / 2,
-                        (float) (sirka / 2 + sirka / 3 * Math.cos((sekundy * 6 * Math.PI / 180 - Math.PI / 2))),
-                        (float) (vyska / 2 + sirka / 3 * Math.sin((sekundy * 6 * Math.PI / 180 - Math.PI / 2))), paint);
-
-                paint.setColor(Color.LTGRAY);
-                canvas.drawLine(sirka / 2,
-                        vyska / 2,
-                        (float) (sirka / 2 + sirka / 3 * Math.cos((sekundy * 6 * Math.PI / 180 - Math.PI / 2) + (milli * Math.PI / 30000))),
-                        (float) (vyska / 2 + sirka / 3 * Math.sin((sekundy * 6 * Math.PI / 180 - Math.PI / 2) + (milli * Math.PI / 30000))), paint);
-*/
-
-                try {
-                    holder.unlockCanvasAndPost(canvas);
-                } catch (Exception e) {
-                    System.out.println("No canvas lock");
-                }
-//                holder.unlockCanvasAndPost(canvas);
+                System.out.println(" ***  holder.getSurface().isValid()) " + drziakPovrchu.getSurface().isValid() + " Current Thread " + currentThread());
 
             }
+
+            platno = drziakPovrchu.lockCanvas();
+
+             if (platno != null) {
+
+                int sirka = platno.getWidth();
+                int vyska = platno.getHeight();
+                draw(platno);
+
+                Bitmap bitmap2 = BitmapFactory.decodeResource(getContext().getResources(), img_ids2);
+                clockDialScaled2 = Bitmap.createScaledBitmap(bitmap2, sirka / 4, sirka / 8, false);
+                platno.drawBitmap(clockDialScaled2, 3 * sirka / 8, 3 * vyska / 8, paint);
+
+                try {
+                        drziakPovrchu.unlockCanvasAndPost(platno);
+                    } catch (Exception e) {
+
+                        System.out.println("No canvas lock");
+                }
+
+             }
+
+
+
+
         }
         private void draw(Canvas canvas) {
 
@@ -210,7 +164,6 @@ public class MySurface extends SurfaceView {
             analogClock.config(sirka, vyska, new Date());
 
             analogClock.draw(canvas);
-
         }
 
     }

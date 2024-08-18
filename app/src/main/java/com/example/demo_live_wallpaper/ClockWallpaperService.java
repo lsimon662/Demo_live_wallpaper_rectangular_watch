@@ -1,6 +1,8 @@
 package com.example.demo_live_wallpaper;
 
 
+import static java.lang.Thread.currentThread;
+
 import java.util.Date;
 
 import android.content.Context;
@@ -59,22 +61,14 @@ public class ClockWallpaperService extends WallpaperService {
             paint.setAntiAlias(true);
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(5);
-            // bgColor = Color.parseColor("#C0C0C0");
 
             clock = new AnalogClock(getApplicationContext());
-            // bgColor = clock.farbaPozadia;
-            // clock.nastavUvodneHodnoty();
-            // "MojeUserPrefs"
+
             SharedPreferences sp = getSharedPreferences("MojeUserPrefs", Context.MODE_PRIVATE);
             if(sp != null)
                 clock.vyberZoSharedPreferences("MojeUserPrefs");
-            bgColor = clock.farbaPozadia;
 
-            /*clock.inicializujHodiny();
-            clock.kresliBody(platno, 0,0, clock.farbaZnaciek);
-            if(clock.b_arabic_numbers)
-                clock.kresliCisla(platno, clock.cisla_arabske, 0,0, clock.farbaCisel);
-            clock.kresliRucicky(platno);*/
+            bgColor = clock.farbaPozadia;
 
             handler.post(drawRunner);
         }
@@ -92,6 +86,7 @@ public class ClockWallpaperService extends WallpaperService {
         @Override
         public void onSurfaceDestroyed(SurfaceHolder holder) {
             super.onSurfaceDestroyed(holder);
+            System.out.println("***** Som v onSurfaceDestroyed wallpaper *****");
             this.visible = false;
             handler.removeCallbacks(drawRunner);
             prefs.unregisterOnSharedPreferenceChangeListener(this);
@@ -107,6 +102,9 @@ public class ClockWallpaperService extends WallpaperService {
 
         private void draw() {
             SurfaceHolder holder = getSurfaceHolder();
+
+            System.out.println(" ***** Wallpaper Thread " + currentThread());
+
             Canvas canvas = null;
             try {
                 canvas = holder.lockCanvas();
@@ -130,8 +128,7 @@ public class ClockWallpaperService extends WallpaperService {
 //            clock.config(width / 2, height / 2, (int) (width * 0.6f),
 //                    new Date(), paint, colors, displayHandSec);
 
-            clock.config(width, height,
-                    new Date());
+            clock.config(width, height, new Date());
 
             // clock.inicializujHodiny();
             clock.draw(canvas);

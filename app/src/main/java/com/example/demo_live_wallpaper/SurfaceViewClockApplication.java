@@ -1208,15 +1208,18 @@ public class SurfaceViewClockApplication extends AppCompatActivity {
 
             case R.id.m_set_wallpaper:
 
-                finishActivity(0);
+                // finishActivity(0);
                 mySurface.analogClock.ulozDoSharedPreferences("preWallpaper");
 
                 Intent intent = new Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
                 intent.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
                         new ComponentName(this, ClockWallpaperService.class));
 
-                startActivity(intent);
+                // finishActivity(0);
+                // finishAffinity();
 
+                startActivity(intent);
+                // mySurface.analogClock.postInvalidateDelayed(200);
                 // finishAffinity();
 
                 break;

@@ -1,7 +1,10 @@
 package com.example.demo_live_wallpaper;
 
+import android.app.WallpaperManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -41,19 +44,10 @@ public class ClockApplication extends AppCompatActivity {
 
     androidx.appcompat.app.AlertDialog.Builder zostava;
 
-    // private Paint paint;
-    // private int[] colors = { 0xFFFF0000, 0xFF0000FF, 0xFFA2BC13 };
-    // private int bgColor;
-    // private float width;
-    // private float height;
-    // private boolean visible = true;
     private boolean displayHandSec = true;
     private AnalogClock analogClock;
     View decorView;
     int uiOptions;
-    // Thread thread;
-    // ConstraintLayout rozlozenie;
-    // private SharedPreferences prefs;
 
     // Handler h;
     int barva, mojaUvodnaFarba;
@@ -108,19 +102,6 @@ public class ClockApplication extends AppCompatActivity {
             analogClock.nastavUvodneHodnoty();
             e.printStackTrace();
         }
-
-        // analogClock.nastavUvodneHodnoty();
-
-        // rozlozenie = findViewById(R.id.rozlozenie);
-
-        // analogClock = new AnalogClock(getApplicationContext());
-
-        // analogClock.nastavUvodneHodnoty();
-
-        // width = (float) analogClock.getWidth();
-        // height = (float) analogClock.getHeight();
-
-        // c = (Canvas) hodiny.platno;
 
         new Thread(new Task()).start();
 
@@ -200,7 +181,6 @@ public class ClockApplication extends AppCompatActivity {
             }
         }
         return false;
-        // return super.onTouchEvent(event);
         // return super.onTouchEvent(event);
     }
 
@@ -550,7 +530,7 @@ public class ClockApplication extends AppCompatActivity {
                 analogClock.h_mechanic = false;
                 analogClock.h_mechanic_full = false;
                 // Toast.makeText(this, "Round selected ", Toast.LENGTH_SHORT).show();
-                // break;
+
                 return true;
             case R.id.rc_angle:
                 if(item.isChecked()) {
@@ -1254,10 +1234,10 @@ public class ClockApplication extends AppCompatActivity {
                 zostava.show();
                 break;
 
-          /*  case R.id.m_set_wallpaper:
+            case R.id.m_set_wallpaper:
 
                 // finishActivity(0);
-                ulozDoSharedPreferences("preWallpaper");
+                analogClock.ulozDoSharedPreferences("preWallpaper");
 
                 Intent intent = new Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
                 intent.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
@@ -1265,9 +1245,9 @@ public class ClockApplication extends AppCompatActivity {
 
                 startActivity(intent);
 
-                finishAffinity();
+                // finishAffinity();
 
-                break;*/
+                break;
 
             case R.id.m_default_settings:   // zatial len test z citani hodnot
                 // spravne ma byt nastavit menu aj premenne
@@ -1328,7 +1308,10 @@ public class ClockApplication extends AppCompatActivity {
 
             default:
                 return super.onOptionsItemSelected(item);
+
         }
+
+        // return super.onOptionsItemSelected(item);
 
         return true;
     }

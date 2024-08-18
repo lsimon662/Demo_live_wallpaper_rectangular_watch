@@ -6,7 +6,8 @@
 
     <uses-feature
         android:name="android.software.live_wallpaper"
-        android:required="true"></uses-feature>
+        android:required="true">
+    </uses-feature>
 
     <application
         android:allowBackup="true"
@@ -47,7 +48,9 @@
 
         <activity
             android:name=".SettingsActivity"
-            android:exported="true"></activity>
+            android:exported="true">
+
+        </activity>
     </application>
 
 </manifest>
