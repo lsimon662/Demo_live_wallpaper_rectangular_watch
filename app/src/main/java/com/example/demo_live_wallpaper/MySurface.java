@@ -20,10 +20,12 @@ public class MySurface extends SurfaceView {
     float hodina;
     float milli;
     int bgColor;
+    boolean navratZWallpaper = false;
 
     Bitmap clockDialScaled, clockDialScaled2;
     AnalogClock analogClock;
     Anim anim;
+    SurfaceHolder drziakPovrchu;
     Canvas platno = null;
 
 
@@ -58,7 +60,7 @@ public class MySurface extends SurfaceView {
         @Override
         public void run() {
             long last_updated_time = 0;
-            long delay = 25;
+            long delay = 5;
 
             cf = new Cifernik(60);     // pre kreslenie cifernika a sekundovy beh
             cfj = new Cifernik(1500);
@@ -118,12 +120,20 @@ public class MySurface extends SurfaceView {
 
         private void draw(int img_ids2) {
 
-            SurfaceHolder drziakPovrchu;
+//            SurfaceHolder drziakPovrchu;
 //            Canvas platno;
+
+          /*  if(navratZWallpaper == true) {
+                // urob novy holder nejake scale treba
+                System.out.println(" ***** Thread " + currentThread() + " drziakPovrchu pred getHolder() " + drziakPovrchu + " navratZWallpaper " + navratZWallpaper);
+                navratZWallpaper = false;
+            }*/
 
             drziakPovrchu = getHolder();
 
-            System.out.println(" ***** Thread " + currentThread());
+            drziakPovrchu.setSizeFromLayout();
+
+            System.out.println(" ***** Thread " + currentThread() + " drziakPovrchu " + drziakPovrchu + " drziakPovrchu.getSurface() " + drziakPovrchu.getSurface());
 
             if(drziakPovrchu.getSurface().isValid() == false) {
 

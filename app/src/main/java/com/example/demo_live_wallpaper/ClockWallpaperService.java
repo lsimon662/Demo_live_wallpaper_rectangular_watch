@@ -6,6 +6,7 @@ import static java.lang.Thread.currentThread;
 import java.util.Date;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Canvas;
@@ -15,6 +16,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.service.wallpaper.WallpaperService;
 import android.view.SurfaceHolder;
+import android.view.View;
 
 /**
  * Clock wallpaper service
@@ -86,10 +88,13 @@ public class ClockWallpaperService extends WallpaperService {
         @Override
         public void onSurfaceDestroyed(SurfaceHolder holder) {
             super.onSurfaceDestroyed(holder);
+
             System.out.println("***** Som v onSurfaceDestroyed wallpaper *****");
             this.visible = false;
+
             handler.removeCallbacks(drawRunner);
             prefs.unregisterOnSharedPreferenceChangeListener(this);
+
         }
 
         @Override
@@ -103,7 +108,7 @@ public class ClockWallpaperService extends WallpaperService {
         private void draw() {
             SurfaceHolder holder = getSurfaceHolder();
 
-            System.out.println(" ***** Wallpaper Thread " + currentThread());
+            System.out.println(" ***** Wallpaper Thread " + currentThread().getName());
 
             Canvas canvas = null;
             try {

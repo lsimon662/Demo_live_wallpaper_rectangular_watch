@@ -11,7 +11,9 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
@@ -19,6 +21,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.Surface;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -34,6 +38,8 @@ public class SurfaceViewClockApplication extends AppCompatActivity {
 
     MySurface mySurface;
     int mojaUvodnaFarba;
+
+    boolean navratZWallpaper = false;
 
     View decorView;
     int uiOptions;
@@ -105,6 +111,24 @@ public class SurfaceViewClockApplication extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        if(navratZWallpaper) {
+            mySurface = new MySurface(getApplicationContext());
+            setContentView(mySurface);
+
+            try {
+                mySurface.analogClock.vyberZoSharedPreferences("priZastaveni");
+            } catch (Exception e) {
+                mySurface.analogClock.nastavUvodneHodnoty();
+                e.printStackTrace();
+            }
+            navratZWallpaper = false;
+        }
+        // Toast.makeText(this, "onStart happened", Toast.LENGTH_SHORT).show();
+        super.onStart();
+    }
+
+    @Override
     protected void onDestroy() {
         // Toast.makeText(this, "onDestroy", Toast.LENGTH_SHORT).show();
         super.onDestroy();
@@ -112,7 +136,7 @@ public class SurfaceViewClockApplication extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        // Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "onResume happened", Toast.LENGTH_SHORT).show();
         super.onResume();
     }
 
@@ -1215,12 +1239,12 @@ public class SurfaceViewClockApplication extends AppCompatActivity {
                 intent.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
                         new ComponentName(this, ClockWallpaperService.class));
 
+                navratZWallpaper = true;
+
                 // finishActivity(0);
                 // finishAffinity();
 
                 startActivity(intent);
-                // mySurface.analogClock.postInvalidateDelayed(200);
-                // finishAffinity();
 
                 break;
 
