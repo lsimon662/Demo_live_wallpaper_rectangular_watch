@@ -124,7 +124,7 @@ public class ClockWallpaperService extends WallpaperService {
             handler.removeCallbacks(drawRunner);
 
             if (visible) {
-                handler.postDelayed(drawRunner, 5);
+                handler.postDelayed(drawRunner, 2);
             }
         }
 

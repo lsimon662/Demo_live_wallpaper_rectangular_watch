@@ -60,7 +60,7 @@ public class MySurface extends SurfaceView {
         @Override
         public void run() {
             long last_updated_time = 0;
-            long delay = 5;
+            long delay = 2;
 
             cf = new Cifernik(60);     // pre kreslenie cifernika a sekundovy beh
             cfj = new Cifernik(1500);
