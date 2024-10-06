@@ -124,15 +124,26 @@ public class ClockApplication extends AppCompatActivity {
         public void run() {
          while (true) {
                  try {
-                    Thread.sleep(100);
+
+                     runOnUiThread(new Runnable() {
+                         @Override
+                         public void run() {
+
+                             analogClock.config(analogClock.getWidth(), analogClock.getHeight(), new Date());
+                             analogClock.postInvalidateDelayed(50);
+
+                         }
+                     });
+
+                    Thread.sleep(20);
                     // System.out.println(" thread " + thread);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                analogClock.config(analogClock.getWidth(), analogClock.getHeight(), new Date());
+                // analogClock.config(analogClock.getWidth(), analogClock.getHeight(), new Date());
                  // analogClock.inicializujHodiny();
                  // analogClock.invalidate();
-                analogClock.postInvalidateDelayed(50);
+                // analogClock.postInvalidateDelayed(50);
 
         //    }
              }
