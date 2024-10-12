@@ -31,8 +31,9 @@ public class ClockWallpaperService extends WallpaperService {
         return new ClockWallpaperEngine();
     }
 
-    private class ClockWallpaperEngine extends Engine implements
-            OnSharedPreferenceChangeListener {
+    private class ClockWallpaperEngine extends Engine {
+
+    // private class ClockWallpaperEngine extends Engine implements OnSharedPreferenceChangeListener {
         private final Handler handler = new Handler();
         private final Runnable drawRunner = new Runnable() {
             @Override
@@ -48,17 +49,17 @@ public class ClockWallpaperService extends WallpaperService {
         private int width;
         private int height;
         private boolean visible = true;
-        private boolean displayHandSec;
+        // private boolean displayHandSec;
         private AnalogClock clock;
-        private SharedPreferences prefs;
+        // private SharedPreferences prefs;
         // Canvas platno;
         // kontrola git
 
         public ClockWallpaperEngine() {
-            prefs = PreferenceManager
-                    .getDefaultSharedPreferences(ClockWallpaperService.this);
-            prefs.registerOnSharedPreferenceChangeListener(this);
-            displayHandSec = prefs.getBoolean(SettingsActivity.DISPLAY_HAND_SEC_KEY, true);
+//            prefs = PreferenceManager
+//                    .getDefaultSharedPreferences(ClockWallpaperService.this);
+//            prefs.registerOnSharedPreferenceChangeListener(this);
+//            displayHandSec = prefs.getBoolean(SettingsActivity.DISPLAY_HAND_SEC_KEY, true);
             paint = new Paint();
             paint.setAntiAlias(true);
             paint.setStyle(Paint.Style.STROKE);
@@ -93,7 +94,7 @@ public class ClockWallpaperService extends WallpaperService {
             this.visible = false;
 
             handler.removeCallbacks(drawRunner);
-            prefs.unregisterOnSharedPreferenceChangeListener(this);
+            // prefs.unregisterOnSharedPreferenceChangeListener(this);
 
         }
 
@@ -139,13 +140,13 @@ public class ClockWallpaperService extends WallpaperService {
             clock.draw(canvas);
         }
 
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
-        {
-            if (SettingsActivity.DISPLAY_HAND_SEC_KEY.equals(key)) {
-                displayHandSec = sharedPreferences.getBoolean(
-                        SettingsActivity.DISPLAY_HAND_SEC_KEY, true);
-            }
-        }
+//        @Override
+//        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
+//        {
+//            if (SettingsActivity.DISPLAY_HAND_SEC_KEY.equals(key)) {
+//                displayHandSec = sharedPreferences.getBoolean(
+//                        SettingsActivity.DISPLAY_HAND_SEC_KEY, true);
+//            }
+//        }
     }
 }

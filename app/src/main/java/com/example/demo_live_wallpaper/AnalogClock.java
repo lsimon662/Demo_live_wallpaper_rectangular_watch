@@ -666,20 +666,24 @@ public class AnalogClock extends View {
 
         Double uhol;
         int polomerRucicky;
+
         this.farbaVysuvnikaRuciciek = farbaVysuvnikaRuciciek;
+        min = Math.min(vyska - okraj, sirka - okraj);
 
         // min = Math.min(vyska - okraj, sirka - okraj);
         // Double uhol = (double) umiestnenie;
 
         if(h_continouos) {
-            uhol = cfj.body[umiestnenie].uhol(sirka >> 1, vyska >> 1);
+            uhol = cfj.body[umiestnenie].uhol(sirka / 2, vyska / 2);
             // int polomerRucicky = jeHodina ? polomer - skratenieRucicky - skratenieHodinovejRucicky : polomer - skratenieRucicky;
-            polomerRucicky = (int) (cfj.body[umiestnenie].dlzka(sirka >> 1, vyska >> 1));
+            polomerRucicky = (int) (cfj.body[umiestnenie].dlzka(sirka / 2, vyska / 2));
+
         }
         else {
-            uhol = cf.body[umiestnenie].uhol(sirka >> 1, vyska >> 1);
+            uhol = cf.body[umiestnenie].uhol(sirka / 2, vyska / 2);
             // int polomerRucicky = jeHodina ? polomer - skratenieRucicky - skratenieHodinovejRucicky : polomer - skratenieRucicky;
-            polomerRucicky = (int) (cf.body[umiestnenie].dlzka(sirka >> 1, vyska >> 1));
+            polomerRucicky = (int) (cf.body[umiestnenie].dlzka(sirka / 2, vyska / 2));
+
         }
         kresba.setStrokeCap(Paint.Cap.ROUND);
 
@@ -784,8 +788,8 @@ public class AnalogClock extends View {
                         (float) (vyska / 2 + 0.75 * Math.sin(uhol) * polomerRucicky + zosuv / 2 + posunT_Y),
                         kresba); */
 
-            platno.drawLine((float) (sirka / 2 + Math.cos(uhol) * (polomerRucicky - (min - okraj) * 0.5) + posunT_X),
-                    (float) (vyska / 2 + Math.sin(uhol) * (polomerRucicky - (min - okraj) * 0.5) + zosuv / 2 + posunT_Y),
+            platno.drawLine((float) (sirka / 2 + Math.cos(uhol) * (polomerRucicky - (min - okraj) * 0.46) + posunT_X),
+                    (float) (vyska / 2 + Math.sin(uhol) * (polomerRucicky - (min - okraj) * 0.46) + zosuv / 2 + posunT_Y),
                     (float) (sirka / 2 + 0.85 * Math.cos(uhol) * polomerRucicky + posunT_X),
                     (float) (vyska / 2 + 0.85 * Math.sin(uhol) * polomerRucicky + zosuv / 2 + posunT_Y),
                     kresba);
@@ -814,8 +818,8 @@ public class AnalogClock extends View {
                         (float) (vyska / 2 + 0.75 * Math.sin(uhol) * polomerRucicky + zosuv / 2 + posunT_Y),
                         kresba);  */
 
-            platno.drawLine((float) (sirka / 2 + Math.cos(uhol) * (polomerRucicky - (min - okraj) * 0.5) + posunT_X),
-                    (float) (vyska / 2 + Math.sin(uhol) * (polomerRucicky - (min - okraj) * 0.5) + zosuv / 2 + posunT_Y),
+            platno.drawLine((float) (sirka / 2 + Math.cos(uhol) * (polomerRucicky - (min - okraj) * 0.46) + posunT_X),
+                    (float) (vyska / 2 + Math.sin(uhol) * (polomerRucicky - (min - okraj) * 0.46) + zosuv / 2 + posunT_Y),
                     (float) (sirka / 2 + 0.85 * Math.cos(uhol) * polomerRucicky + posunT_X),
                     (float) (vyska / 2 + 0.85 * Math.sin(uhol) * polomerRucicky + zosuv / 2 + posunT_Y),
                     kresba);
